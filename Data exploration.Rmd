@@ -1,0 +1,112 @@
+---
+title: "Data Exploration"
+author: "Yining Chen"
+date: "2022-11-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r,message=FALSE}
+library(dplyr)
+library(kableExtra)
+library(ggplot2)
+library(corrplot)
+```
+
+```{r}
+diabetes <- read.csv("diabetes.csv")
+```
+
+```{r}
+variable_name <- c("Pregnancies","Glucose","BloodPressure","SkinThickness","Insulin", "BMI","DiabetesPedigreeFunction","Age", "Outcome")
+description <- c("To express the Number of pregnancies","To express the Glucose level in blood","To express the Blood pressure measurement","To express the thickness of the skin","To express the Insulin level in blood","To express the Body mass index","To express the Diabetes percentage","To express the age","To express the final result 1 is Yes and 0 is No")
+variable_data <- data.frame(variable_name,description)
+kable(variable_data,caption = "Table 1: Data Dictionary",col.names = c("Variable Name","Description"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
+```
+
+```{r}
+kable(head(select(diabetes,Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome),9),caption = "Table 1: Raw Data") %>%
+  kable_styling(latex_option = c("hold_position"), position = "left")
+```
+```{r}
+diabetes$Outcome <-factor(diabetes$Outcome)
+```
+
+```{r}
+p1 <- ggplot(diabetes,aes(x= Outcome, y=Pregnancies,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p2 <- ggplot(diabetes,aes(x= Outcome, y=Glucose,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p3 <- ggplot(diabetes,aes(x= Outcome, y=BloodPressure,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p4 <- ggplot(diabetes,aes(x= Outcome, y=SkinThickness,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p5 <- ggplot(diabetes,aes(x= Outcome, y=Insulin,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p6 <- ggplot(diabetes,aes(x= Outcome, y=BMI,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p7 <- ggplot(diabetes,aes(x= Outcome, y=DiabetesPedigreeFunction,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p8 <- ggplot(diabetes,aes(x= Outcome, y=Age,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+```
+
+```{r}
+p <- ggpubr::ggarrange(p1, p2,p3,p4,p5,p6,p7,p8, ncol=4,nrow = 2,common.legend = TRUE)
+
+ggpubr::annotate_figure(p, top = ggpubr::text_grob("Figure 1: Distributions of Variables Among Each Group", color = "#0F2540",face = "bold", size = 15))
+
+```
+```{r}
+v1 <- ggplot(diabetes, aes(x=Outcome, y=Pregnancies,fill=Outcome)) + 
+  geom_violin()+labs(x="")+scale_fill_manual(labels = c("Normal", "Diabetes"), values = c("mistyrose", "plum3"))+theme_minimal()
+
+v2 <- ggplot(diabetes, aes(x=Outcome, y=Glucose,color=Outcome)) + 
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+
+v3 <- ggplot(diabetes, aes(x=Outcome, y=BloodPressure,color=Outcome)) + 
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+
+v4 <- ggplot(diabetes, aes(x=Outcome, y=SkinThickness,color=Outcome)) + 
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+
+v5 <- ggplot(diabetes, aes(x=Outcome, y=Insulin,color=Outcome)) + 
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+
+v6 <- ggplot(diabetes, aes(x=Outcome, y=BMI,color=Outcome)) + 
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+
+v7 <- ggplot(diabetes, aes(x=Outcome, y=DiabetesPedigreeFunction,color=Outcome)) + 
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+
+v8 <- ggplot(diabetes, aes(x=Outcome, y=Age,color=Outcome)) + 
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+```
+
+```{r}
+v <- ggpubr::ggarrange(v1, v2,v3,v4,v5,v6,v7,v8, ncol=4,nrow = 2,common.legend = TRUE)
+
+ggpubr::annotate_figure(v, top = ggpubr::text_grob("Figure 2: Distributions of Variables Among Each Group", color = "#0F2540",face = "bold", size = 15))
+```
+
+```{r}
+diabetes$Outcome <-as.numeric(diabetes$Outcome)
+res <- cor(diabetes%>%select(Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome))
+```
+
+```{r}
+col <- colorRampPalette(c("violetred1", "white", "mediumpurple"))(20)
+corrplot(res, type = "upper", order = "hclust", 
+         tl.col = "lavenderblush4", tl.srt = 40,bg = "lavenderblush2",col =col,tl.cex = 0.7)
+```
+
