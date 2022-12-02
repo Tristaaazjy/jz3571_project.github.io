@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Diabetes</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="Data-exploration.html">exploratory statitics</a>
+</li>
+<li>
+  <a href="descriptive_statistics.html">Descriptive statitics</a>
+</li>
+<li>
+  <a href="dashboard.html">Mapping</a>
+</li>
+<li>
+  <a href="project_report.html">Project Report</a>
+</li>
+<li>
+  <a href="mailto:&lt;you@youremail.com&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/&lt;YOUR_GH_NAME&gt;/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Diabetes</h1>
+
+</div>
+
+
+<pre class="r"><code>library(dplyr)
+library(kableExtra)
+library(ggplot2)
+library(corrplot)</code></pre>
+<pre class="r"><code>diabetes &lt;- read.csv(&quot;diabetes.csv&quot;)</code></pre>
+<pre class="r"><code>variable_name &lt;- c(&quot;Pregnancies&quot;,&quot;Glucose&quot;,&quot;BloodPressure&quot;,&quot;SkinThickness&quot;,&quot;Insulin&quot;, &quot;BMI&quot;,&quot;DiabetesPedigreeFunction&quot;,&quot;Age&quot;, &quot;Outcome&quot;)
+description &lt;- c(&quot;To express the Number of pregnancies&quot;,&quot;To express the Glucose level in blood&quot;,&quot;To express the Blood pressure measurement&quot;,&quot;To express the thickness of the skin&quot;,&quot;To express the Insulin level in blood&quot;,&quot;To express the Body mass index&quot;,&quot;To express the Diabetes percentage&quot;,&quot;To express the age&quot;,&quot;To express the final result 1 is Yes and 0 is No&quot;)
+variable_data &lt;- data.frame(variable_name,description)
+kable(variable_data,caption = &quot;Table 1: Data Dictionary&quot;,col.names = c(&quot;Variable Name&quot;,&quot;Description&quot;))%&gt;% kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
+<table class="table" style>
+<caption>
+Table 1: Data Dictionary
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable Name
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Pregnancies
+</td>
+<td style="text-align:left;">
+To express the Number of pregnancies
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Glucose
+</td>
+<td style="text-align:left;">
+To express the Glucose level in blood
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BloodPressure
+</td>
+<td style="text-align:left;">
+To express the Blood pressure measurement
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SkinThickness
+</td>
+<td style="text-align:left;">
+To express the thickness of the skin
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Insulin
+</td>
+<td style="text-align:left;">
+To express the Insulin level in blood
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMI
+</td>
+<td style="text-align:left;">
+To express the Body mass index
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DiabetesPedigreeFunction
+</td>
+<td style="text-align:left;">
+To express the Diabetes percentage
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Age
+</td>
+<td style="text-align:left;">
+To express the age
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Outcome
+</td>
+<td style="text-align:left;">
+To express the final result 1 is Yes and 0 is No
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>kable(head(select(diabetes,Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome),9),caption = &quot;Table 1: Raw Data&quot;) %&gt;%
+  kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
+<table class="table" style>
+<caption>
+Table 1: Raw Data
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Pregnancies
+</th>
+<th style="text-align:right;">
+Glucose
+</th>
+<th style="text-align:right;">
+BloodPressure
+</th>
+<th style="text-align:right;">
+SkinThickness
+</th>
+<th style="text-align:right;">
+Insulin
+</th>
+<th style="text-align:right;">
+BMI
+</th>
+<th style="text-align:right;">
+DiabetesPedigreeFunction
+</th>
+<th style="text-align:right;">
+Age
+</th>
+<th style="text-align:right;">
+Outcome
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+148
+</td>
+<td style="text-align:right;">
+72
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+33.6
+</td>
+<td style="text-align:right;">
+0.627
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+85
+</td>
+<td style="text-align:right;">
+66
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+26.6
+</td>
+<td style="text-align:right;">
+0.351
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+183
+</td>
+<td style="text-align:right;">
+64
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+23.3
+</td>
+<td style="text-align:right;">
+0.672
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+89
+</td>
+<td style="text-align:right;">
+66
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+94
+</td>
+<td style="text-align:right;">
+28.1
+</td>
+<td style="text-align:right;">
+0.167
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+137
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+168
+</td>
+<td style="text-align:right;">
+43.1
+</td>
+<td style="text-align:right;">
+2.288
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+116
+</td>
+<td style="text-align:right;">
+74
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+25.6
+</td>
+<td style="text-align:right;">
+0.201
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+78
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+88
+</td>
+<td style="text-align:right;">
+31.0
+</td>
+<td style="text-align:right;">
+0.248
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+115
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+35.3
+</td>
+<td style="text-align:right;">
+0.134
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+197
+</td>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+543
+</td>
+<td style="text-align:right;">
+30.5
+</td>
+<td style="text-align:right;">
+0.158
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>diabetes$Outcome &lt;-factor(diabetes$Outcome)</code></pre>
+<pre class="r"><code>p1 &lt;- ggplot(diabetes,aes(x= Outcome, y=Pregnancies,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p2 &lt;- ggplot(diabetes,aes(x= Outcome, y=Glucose,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p3 &lt;- ggplot(diabetes,aes(x= Outcome, y=BloodPressure,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p4 &lt;- ggplot(diabetes,aes(x= Outcome, y=SkinThickness,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p5 &lt;- ggplot(diabetes,aes(x= Outcome, y=Insulin,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p6 &lt;- ggplot(diabetes,aes(x= Outcome, y=BMI,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p7 &lt;- ggplot(diabetes,aes(x= Outcome, y=DiabetesPedigreeFunction,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p8 &lt;- ggplot(diabetes,aes(x= Outcome, y=Age,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()</code></pre>
+<pre class="r"><code>p &lt;- ggpubr::ggarrange(p1, p2,p3,p4,p5,p6,p7,p8, ncol=4,nrow = 2,common.legend = TRUE)
+
+ggpubr::annotate_figure(p, top = ggpubr::text_grob(&quot;Figure 1: Distributions of Variables Among Each Group&quot;, color = &quot;#0F2540&quot;,face = &quot;bold&quot;, size = 15))</code></pre>
+<p><img src="Data-exploration_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>v1 &lt;- ggplot(diabetes, aes(x=Outcome, y=Pregnancies,fill=Outcome)) + 
+  geom_violin()+labs(x=&quot;&quot;)+scale_fill_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;mistyrose&quot;, &quot;plum3&quot;))+theme_minimal()
+
+v2 &lt;- ggplot(diabetes, aes(x=Outcome, y=Glucose,color=Outcome)) + 
+  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
+
+v3 &lt;- ggplot(diabetes, aes(x=Outcome, y=BloodPressure,color=Outcome)) + 
+  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
+
+v4 &lt;- ggplot(diabetes, aes(x=Outcome, y=SkinThickness,color=Outcome)) + 
+  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
+
+v5 &lt;- ggplot(diabetes, aes(x=Outcome, y=Insulin,color=Outcome)) + 
+  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
+
+v6 &lt;- ggplot(diabetes, aes(x=Outcome, y=BMI,color=Outcome)) + 
+  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
+
+v7 &lt;- ggplot(diabetes, aes(x=Outcome, y=DiabetesPedigreeFunction,color=Outcome)) + 
+  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
+
+v8 &lt;- ggplot(diabetes, aes(x=Outcome, y=Age,color=Outcome)) + 
+  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()</code></pre>
+<pre class="r"><code>v &lt;- ggpubr::ggarrange(v1, v2,v3,v4,v5,v6,v7,v8, ncol=4,nrow = 2,common.legend = TRUE)
+
+ggpubr::annotate_figure(v, top = ggpubr::text_grob(&quot;Figure 2: Distributions of Variables Among Each Group&quot;, color = &quot;#0F2540&quot;,face = &quot;bold&quot;, size = 15))</code></pre>
+<p><img src="Data-exploration_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>diabetes$Outcome &lt;-as.numeric(diabetes$Outcome)
+res &lt;- cor(diabetes%&gt;%select(Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome))</code></pre>
+<pre class="r"><code>col &lt;- colorRampPalette(c(&quot;violetred1&quot;, &quot;white&quot;, &quot;mediumpurple&quot;))(20)
+corrplot(res, type = &quot;upper&quot;, order = &quot;hclust&quot;, 
+         tl.col = &quot;lavenderblush4&quot;, tl.srt = 40,bg = &quot;lavenderblush2&quot;,col =col,tl.cex = 0.7)</code></pre>
+<p><img src="Data-exploration_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>df &lt;- group_by(diabetes,Pregnancies) %&gt;%mutate(percent = sum(Outcome)/n())
+df &lt;- data.frame(
+  Pregnancies=c(0:15,17),
+  Percentage= 100*c(0.342,0.215,0.184,0.36,0.338,0.368,0.32,0.556,0.579,0.643,0.417,0.636,0.444,0.5,1.0,1.0,1.0)
+  )
+ggplot(df, aes(x=Pregnancies, y=Percentage)) + 
+  geom_bar(stat = &quot;identity&quot;,color=&quot;blue&quot;, fill=rgb(0.1,0.4,0.5,0.7) )+
+  geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 3,
+            position = position_dodge(0.9),colour = &quot;blue&quot;) + ggtitle(&quot;Fig3. Percentage of ICU Admissions in each NEWS&quot;)+theme_minimal()</code></pre>
+<p><img src="Data-exploration_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
