@@ -134,19 +134,22 @@ col <- colorRampPalette(c("violetred1", "white", "mediumpurple"))(20)
 corrplot(res, type = "upper", order = "hclust", 
          tl.col = "lavenderblush4", tl.srt = 40,bg = "lavenderblush2",col =col,tl.cex = 0.7)
 ```
+
+
+
 ### Two specific factors exploration
 
 Since the age and pregnancy factors are most concerned. We use the bar plot to visualize the proportion of diabetes among stratified age groups and different numbers of pregnancies.
 
 
-#### Age
+####  Age
 
 “Men generally have heart disease in their 40’s and 50’s, about a decade before women. But this is generally not true for diabetic women. For diabetic women, the cardiovascular risk occurs earlier. Diabetes takes away much of the protection premenopausal women would normally get from estrogen.”                                                            —Kapur, A., & Seshiah, V. (2017)   
 
 The diabetes proportion gets higher with the increase of age variable, and the age group of 50-60 years old has the highest diabetes proportion. Generally, age factors have a positive association with diabetes proportion.
 
 
-#### Pregnancy
+####  Pregnancy
 
 We also examine the association between pregnancy and diabetes proportion, as it can be seen in the plot below, as the pregnancy frequency increases the diabetes proportion also increases, and when the pregnancy frequency is 17 times,  diabetes proportion reaches a hundred percent.
 
