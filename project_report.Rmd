@@ -26,6 +26,8 @@ Kapur, A., & Seshiah, V. (2017). [Women & diabetes: Our right to a healthy futur
 
 ### Initial questions 
 
+We are trying to find which factors would help us predict diabetes among all the eight possible variables.
+
 ### Data
 
 ### Exploratory analysis
