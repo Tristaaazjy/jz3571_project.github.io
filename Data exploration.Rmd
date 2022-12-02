@@ -81,6 +81,10 @@ ggpubr::annotate_figure(p, top = ggpubr::text_grob("Figure 1: Distributions of V
 
 ```
 
+Results reveal that different groups of females have different medians of diagnostic results, which indicate that the factors have linear or nonlinear association with diabetes. 
+
+The below Figure 2 shows the violin plots for each factor to see if these variables are normally distributed or not.
+
 ```{r, echo = FALSE}
 v1 <- ggplot(diabetes, aes(x=Outcome, y=Pregnancies,fill=Outcome)) + 
   geom_violin()+labs(x="")+scale_fill_manual(labels = c("Normal", "Diabetes"), values = c("mistyrose", "plum3"))+theme_minimal()

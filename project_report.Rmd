@@ -26,7 +26,7 @@ Kapur, A., & Seshiah, V. (2017). [Women & diabetes: Our right to a healthy futur
 
 ### Initial questions 
 
-### Data: Source, scraping method, cleaning, etc.
+### Data
 
 ### Exploratory analysis
 
