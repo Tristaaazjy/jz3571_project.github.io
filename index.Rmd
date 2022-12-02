@@ -14,8 +14,16 @@ output:
 
 ### Backgroud
 
-Diabetes is a chronic (long-lasting) health condition that affects how your body turns food into energy. Most people’s bodies naturally produce the hormone insulin, which helps convert sugars from the food we eat into energy that the body can use or store for later. When you have diabetes, your body either doesn’t make insulin or doesn’t use its insulin well, causing your blood sugar to rise. High blood sugar levels can cause serious health problems over time.
+Diabetes is a chronic health condition that affects how your body turns food into energy. Most people’s bodies naturally produce the hormone insulin, which helps convert sugars from the food we eat into energy that the body can use or store for later. When you have diabetes, your body either doesn’t make insulin or doesn’t use its insulin well, causing your blood sugar to rise. High blood sugar levels can cause serious health problems over time.
 
 ### Website overview
 
 ### Collaborators
+
+Yining Chen (yc4198)   
+
+Zhaohua Chunyu (zc2691)   
+
+Qingzhen Sun (qs2260)   
+
+Junyan Zhu(jz3571)
