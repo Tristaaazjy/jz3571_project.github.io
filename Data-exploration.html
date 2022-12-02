@@ -370,106 +370,11 @@ div.tocify {
 </div>
 
 
-<pre class="r"><code>library(dplyr)
-library(kableExtra)
-library(ggplot2)
-library(corrplot)</code></pre>
-<pre class="r"><code>diabetes &lt;- read.csv(&quot;diabetes.csv&quot;)</code></pre>
-<pre class="r"><code>variable_name &lt;- c(&quot;Pregnancies&quot;,&quot;Glucose&quot;,&quot;BloodPressure&quot;,&quot;SkinThickness&quot;,&quot;Insulin&quot;, &quot;BMI&quot;,&quot;DiabetesPedigreeFunction&quot;,&quot;Age&quot;, &quot;Outcome&quot;)
-description &lt;- c(&quot;To express the Number of pregnancies&quot;,&quot;To express the Glucose level in blood&quot;,&quot;To express the Blood pressure measurement&quot;,&quot;To express the thickness of the skin&quot;,&quot;To express the Insulin level in blood&quot;,&quot;To express the Body mass index&quot;,&quot;To express the Diabetes percentage&quot;,&quot;To express the age&quot;,&quot;To express the final result 1 is Yes and 0 is No&quot;)
-variable_data &lt;- data.frame(variable_name,description)
-kable(variable_data,caption = &quot;Table 1: Data Dictionary&quot;,col.names = c(&quot;Variable Name&quot;,&quot;Description&quot;))%&gt;% kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
-<table class="table" style>
-<caption>
-Table 1: Data Dictionary
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-Variable Name
-</th>
-<th style="text-align:left;">
-Description
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Pregnancies
-</td>
-<td style="text-align:left;">
-To express the Number of pregnancies
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Glucose
-</td>
-<td style="text-align:left;">
-To express the Glucose level in blood
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-BloodPressure
-</td>
-<td style="text-align:left;">
-To express the Blood pressure measurement
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-SkinThickness
-</td>
-<td style="text-align:left;">
-To express the thickness of the skin
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Insulin
-</td>
-<td style="text-align:left;">
-To express the Insulin level in blood
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-BMI
-</td>
-<td style="text-align:left;">
-To express the Body mass index
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-DiabetesPedigreeFunction
-</td>
-<td style="text-align:left;">
-To express the Diabetes percentage
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Age
-</td>
-<td style="text-align:left;">
-To express the age
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Outcome
-</td>
-<td style="text-align:left;">
-To express the final result 1 is Yes and 0 is No
-</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>kable(head(select(diabetes,Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome),9),caption = &quot;Table 1: Raw Data&quot;) %&gt;%
-  kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
+<div id="data-preview" class="section level3">
+<h3>Data Preview</h3>
+<p>Our dataset include 9 varibles, which are shown in table 1. Outcome
+is the dependent variable we aim to prredict based on other
+variables.</p>
 <table class="table" style>
 <caption>
 Table 1: Raw Data
@@ -769,77 +674,111 @@ Outcome
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>diabetes$Outcome &lt;-factor(diabetes$Outcome)</code></pre>
-<pre class="r"><code>p1 &lt;- ggplot(diabetes,aes(x= Outcome, y=Pregnancies,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
-  theme_minimal()
-
-p2 &lt;- ggplot(diabetes,aes(x= Outcome, y=Glucose,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
-  theme_minimal()
-
-p3 &lt;- ggplot(diabetes,aes(x= Outcome, y=BloodPressure,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
-  theme_minimal()
-
-p4 &lt;- ggplot(diabetes,aes(x= Outcome, y=SkinThickness,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
-  theme_minimal()
-
-p5 &lt;- ggplot(diabetes,aes(x= Outcome, y=Insulin,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
-  theme_minimal()
-
-p6 &lt;- ggplot(diabetes,aes(x= Outcome, y=BMI,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
-  theme_minimal()
-
-p7 &lt;- ggplot(diabetes,aes(x= Outcome, y=DiabetesPedigreeFunction,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
-  theme_minimal()
-
-p8 &lt;- ggplot(diabetes,aes(x= Outcome, y=Age,color=Outcome)) + geom_boxplot()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme(axis.title.y = element_text(size=8))+
-  theme_minimal()</code></pre>
-<pre class="r"><code>p &lt;- ggpubr::ggarrange(p1, p2,p3,p4,p5,p6,p7,p8, ncol=4,nrow = 2,common.legend = TRUE)
-
-ggpubr::annotate_figure(p, top = ggpubr::text_grob(&quot;Figure 1: Distributions of Variables Among Each Group&quot;, color = &quot;#0F2540&quot;,face = &quot;bold&quot;, size = 15))</code></pre>
+<p>Table 2 gives the preview about each variable’s intended
+measurement.</p>
+<table class="table" style>
+<caption>
+Table 2: Data Dictionary
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable Name
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Pregnancies
+</td>
+<td style="text-align:left;">
+To express the Number of pregnancies
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Glucose
+</td>
+<td style="text-align:left;">
+To express the Glucose level in blood
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BloodPressure
+</td>
+<td style="text-align:left;">
+To express the Blood pressure measurement
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SkinThickness
+</td>
+<td style="text-align:left;">
+To express the thickness of the skin
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Insulin
+</td>
+<td style="text-align:left;">
+To express the Insulin level in blood
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMI
+</td>
+<td style="text-align:left;">
+To express the Body mass index
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DiabetesPedigreeFunction
+</td>
+<td style="text-align:left;">
+To express the Diabetes percentage
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Age
+</td>
+<td style="text-align:left;">
+To express the age
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Outcome
+</td>
+<td style="text-align:left;">
+To express the diabetes outcome 1 is Yes and 0 is No
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="factors-preview" class="section level3">
+<h3>Factors Preview</h3>
+<p>We start with identifying whether the eight diagnostic measurements
+are related with diabetes or not. Since our outcome variable is a binary
+variable, the box plot were used to visualize the relationship between
+factors and diabetes. The y-axis was defined as the diagnostic
+measurement result and x-axis were grouped by female with diabetes or
+not. The results of all box plots are shown in Figure 1.</p>
 <p><img src="Data-exploration_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<pre class="r"><code>v1 &lt;- ggplot(diabetes, aes(x=Outcome, y=Pregnancies,fill=Outcome)) + 
-  geom_violin()+labs(x=&quot;&quot;)+scale_fill_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;mistyrose&quot;, &quot;plum3&quot;))+theme_minimal()
-
-v2 &lt;- ggplot(diabetes, aes(x=Outcome, y=Glucose,color=Outcome)) + 
-  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
-
-v3 &lt;- ggplot(diabetes, aes(x=Outcome, y=BloodPressure,color=Outcome)) + 
-  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
-
-v4 &lt;- ggplot(diabetes, aes(x=Outcome, y=SkinThickness,color=Outcome)) + 
-  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
-
-v5 &lt;- ggplot(diabetes, aes(x=Outcome, y=Insulin,color=Outcome)) + 
-  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
-
-v6 &lt;- ggplot(diabetes, aes(x=Outcome, y=BMI,color=Outcome)) + 
-  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
-
-v7 &lt;- ggplot(diabetes, aes(x=Outcome, y=DiabetesPedigreeFunction,color=Outcome)) + 
-  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()
-
-v8 &lt;- ggplot(diabetes, aes(x=Outcome, y=Age,color=Outcome)) + 
-  geom_violin()+labs(x=&quot;&quot;)+scale_color_manual(labels = c(&quot;Normal&quot;, &quot;Diabetes&quot;), values = c(&quot;#DC9FB4&quot;, &quot;purple&quot;))+theme_minimal()</code></pre>
-<pre class="r"><code>v &lt;- ggpubr::ggarrange(v1, v2,v3,v4,v5,v6,v7,v8, ncol=4,nrow = 2,common.legend = TRUE)
-
-ggpubr::annotate_figure(v, top = ggpubr::text_grob(&quot;Figure 2: Distributions of Variables Among Each Group&quot;, color = &quot;#0F2540&quot;,face = &quot;bold&quot;, size = 15))</code></pre>
 <p><img src="Data-exploration_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<pre class="r"><code>diabetes$Outcome &lt;-as.numeric(diabetes$Outcome)
-res &lt;- cor(diabetes%&gt;%select(Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome))</code></pre>
-<pre class="r"><code>col &lt;- colorRampPalette(c(&quot;violetred1&quot;, &quot;white&quot;, &quot;mediumpurple&quot;))(20)
-corrplot(res, type = &quot;upper&quot;, order = &quot;hclust&quot;, 
-         tl.col = &quot;lavenderblush4&quot;, tl.srt = 40,bg = &quot;lavenderblush2&quot;,col =col,tl.cex = 0.7)</code></pre>
 <p><img src="Data-exploration_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<pre class="r"><code>df &lt;- group_by(diabetes,Pregnancies) %&gt;%mutate(percent = sum(Outcome)/n())
-df &lt;- data.frame(
-  Pregnancies=c(0:15,17),
-  Percentage= 100*c(0.342,0.215,0.184,0.36,0.338,0.368,0.32,0.556,0.579,0.643,0.417,0.636,0.444,0.5,1.0,1.0,1.0)
-  )
-ggplot(df, aes(x=Pregnancies, y=Percentage)) + 
-  geom_bar(stat = &quot;identity&quot;,color=&quot;blue&quot;, fill=rgb(0.1,0.4,0.5,0.7) )+
-  geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 3,
-            position = position_dodge(0.9),colour = &quot;blue&quot;) + ggtitle(&quot;Fig3. Percentage of ICU Admissions in each NEWS&quot;)+theme_minimal()</code></pre>
 <p><img src="Data-exploration_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
 
 
 
