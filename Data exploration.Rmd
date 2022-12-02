@@ -110,3 +110,15 @@ corrplot(res, type = "upper", order = "hclust",
          tl.col = "lavenderblush4", tl.srt = 40,bg = "lavenderblush2",col =col,tl.cex = 0.7)
 ```
 
+```{r}
+df <- group_by(diabetes,Pregnancies) %>%mutate(percent = sum(Outcome)/n())
+df <- data.frame(
+  Pregnancies=c(0:15,17),
+  Percentage= 100*c(0.342,0.215,0.184,0.36,0.338,0.368,0.32,0.556,0.579,0.643,0.417,0.636,0.444,0.5,1.0,1.0,1.0)
+  )
+ggplot(df, aes(x=Pregnancies, y=Percentage)) + 
+  geom_bar(stat = "identity",color="blue", fill=rgb(0.1,0.4,0.5,0.7) )+
+  geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 3,
+            position = position_dodge(0.9),colour = "blue") + ggtitle("Fig3. Percentage of ICU Admissions in each NEWS")+theme_minimal()
+```
+
