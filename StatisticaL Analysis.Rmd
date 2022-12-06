@@ -1,0 +1,150 @@
+---
+title: "Statistical Analysis"
+author: "Yining Chen"
+date: "2022-12-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r,message=FALSE}
+library(dplyr)
+library(MASS)
+library(leaps)
+library(bestglm)
+library(mgcv)
+library(modelr)
+library(purrr)
+library(ggplot2)
+library(tidyverse)
+library(caret)
+library(kableExtra)
+library(pROC)
+```
+
+```{r}
+diabetes <- read.csv("diabetes.csv")
+```
+
+### Full Model
+```{r}
+fullmodel <- glm(Outcome ~. ,data = diabetes)
+summary(fullmodel)
+```
+
+## Model Selection
+
+### Stepwise regression
+
+```{r}
+stepmodel <- stepAIC(fullmodel,trace = F)
+stepmodel$anova
+summary(stepmodel)
+```
+
+###  Best subset regression
+
+Best subset regression selects the best model from all possible subsets according to some goodness-of-fit criteria.
+```{r}
+subsetmodel <- bestglm(diabetes,IC="AIC",family = binomial)
+subsetmodel
+```
+```{r}
+regsubsetsObj <- regsubsets(Outcome ~. ,data = diabetes,nvmax = 8)
+plot(regsubsetsObj, scale = "adjr2") 
+```
+
+
+## Cross validation
+
+```{r}
+cv_df =
+  crossv_mc(diabetes, 100) %>% 
+  mutate(
+    train = map(train, as_tibble),
+    test = map(test, as_tibble))
+```
+
+```{r}
+cv_df = 
+  cv_df %>% 
+  mutate(
+    fullmodel = map(train, ~glm(Outcome ~. ,data =.x)),
+    stepmodel     = map(train, ~glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age, data=.x)),
+    subsetmodel  = map(train, ~glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=.x))) %>% 
+  mutate(
+    rmse_full = map2_dbl(fullmodel, test, ~rmse(model = .x, data = .y)),
+    rmse_step    = map2_dbl(stepmodel, test, ~rmse(model = .x, data = .y)),
+    rmse_subset = map2_dbl(subsetmodel, test, ~rmse(model = .x, data = .y))
+    )
+```
+
+```{r}
+cv_df %>% 
+  select(starts_with("rmse")) %>% 
+  pivot_longer(
+    everything(),
+    names_to = "model", 
+    values_to = "rmse",
+    names_prefix = "rmse_") %>% 
+  mutate(model = fct_inorder(model)) %>% 
+  ggplot(aes(x = model, y = rmse)) + geom_violin()
+```
+```{r}
+training.samples <- diabetes$Outcome %>%
+  createDataPartition(p = 0.8, list = FALSE)
+train.data  <- diabetes[training.samples, ]
+test.data <- diabetes[-training.samples, ]
+```
+
+```{r}
+predictions <- fullmodel %>% predict(test.data) 
+predict.class <- ifelse(predictions < 0.5,0,1)
+mean(predict.class==test.data$Outcome)
+
+```
+
+```{r}
+predictions <- stepmodel %>% predict(test.data) 
+predict.class <- ifelse(predictions < 0.5,0,1)
+mean(predict.class==test.data$Outcome)
+```
+
+```{r}
+subsetmodel <- glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=diabetes)
+predictions <- subsetmodel %>% predict(test.data) 
+predict.class <- ifelse(predictions < 0.5,0,1)
+mean(predict.class==test.data$Outcome)
+```
+
+
+## Multicollinearity check
+
+The VIFs of all the X’s are below 2 now. So, the condition of multicollinearity is satisfied.
+
+```{r}
+all_vifs <- car::vif(stepmodel)
+print(all_vifs)
+```
+
+
+
+```{r}
+variable_name <- c("Pregnancies", "Glucose", "Blood Pressure", "BMI", "Diabetes Pedigree Function","Age")
+val <- c(1.021,1.006,0.998,1.013,1.151,1.003)
+p <- c("< 0.05","< 0.05","< 0.05","< 0.05","< 0.05",0.069)
+variable_data <- data.frame(variable_name,val,p)
+kable(variable_data,caption = "Parameter estimates for the logistic model", col.names = c("Parameters","Exponentiated Coefficients/Odds Ratio","P-values"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
+```
+
+```{r}
+exp(stepmodel$coefficients)
+```
+
+### Diagnostics
+```{r}
+rocobj <- roc(test.data$Outcome, predict.class)
+rocobj
+```

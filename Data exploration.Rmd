@@ -119,6 +119,27 @@ df <- data.frame(
 ggplot(df, aes(x=Pregnancies, y=Percentage)) + 
   geom_bar(stat = "identity",color="blue", fill=rgb(0.1,0.4,0.5,0.7) )+
   geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 3,
-            position = position_dodge(0.9),colour = "blue") + ggtitle("Fig3. Percentage of ICU Admissions in each NEWS")+theme_minimal()
+            position = position_dodge(0.9),colour = "blue") + ggtitle("Fig3. Percentage of Diabetes According to Different Pregnancies")+theme_minimal()
+```
+
+```{r}
+diabetes <- diabetes %>% 
+  mutate(Agegroup = case_when(Age < 30 ~ "20+", 
+                              30 <= Age & Age < 40 ~ "30+", 
+                              40 <= Age & Age < 50 ~ "40+", 
+                              50 <= Age & Age < 60 ~ "50+", 
+                              60 <= Age ~ "60+"
+                               ))
+
+df <- group_by(diabetes,Agegroup) %>%mutate(percent = sum(Outcome)/n())
+df <- data.frame(
+  Agegroup=c("20+","30+","40+","50+","60+"),
+  Percentage= 100*c(0.212,0.461,0.551,0.596,0.281)
+  )
+ggplot(df, aes(x=Agegroup, y=Percentage)) + 
+  geom_bar(stat = "identity",color="blue", fill=rgb(0.1,0.4,0.5,0.7) )+
+  geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 3,
+            position = position_dodge(0.9),colour = "blue") + ggtitle("Fig3. Percentage of Diabetes in Different Age Groups")+theme_minimal()+labs(x="Age Group")
+
 ```
 
