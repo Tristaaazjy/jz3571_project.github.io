@@ -1,41 +1,54 @@
 ---
-title: "Data Exploration"
-author: "Yining Chen"
-date: "2022-11-30"
-output: html_document
+title: "Diabetes"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r,message=FALSE}
+```{r, include = FALSE}
+library(tidyverse)
 library(dplyr)
 library(kableExtra)
 library(ggplot2)
 library(corrplot)
 ```
-
-```{r}
+### Data Preview
+```{r, echo = FALSE}
 diabetes <- read.csv("diabetes.csv")
 ```
+Our dataset include 9 varibles, which are shown in table 1. Outcome is the dependent variable we aim to prredict based on other variables.
 
-```{r}
-variable_name <- c("Pregnancies","Glucose","BloodPressure","SkinThickness","Insulin", "BMI","DiabetesPedigreeFunction","Age", "Outcome")
-description <- c("To express the Number of pregnancies","To express the Glucose level in blood","To express the Blood pressure measurement","To express the thickness of the skin","To express the Insulin level in blood","To express the Body mass index","To express the Diabetes percentage","To express the age","To express the final result 1 is Yes and 0 is No")
-variable_data <- data.frame(variable_name,description)
-kable(variable_data,caption = "Table 1: Data Dictionary",col.names = c("Variable Name","Description"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
-```
-
-```{r}
+```{r, echo = FALSE}
 kable(head(select(diabetes,Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome),9),caption = "Table 1: Raw Data") %>%
   kable_styling(latex_option = c("hold_position"), position = "left")
-```
-```{r}
+
 diabetes$Outcome <-factor(diabetes$Outcome)
 ```
 
-```{r}
+Table 2 gives the preview about each variable's intended measurement.
+
+```{r, echo = FALSE}
+variable_name <- c("Pregnancies","Glucose","BloodPressure","SkinThickness","Insulin", "BMI","DiabetesPedigreeFunction","Age", "Outcome")
+description <- c("To express the Number of pregnancies","To express the Glucose level in blood","To express the Blood pressure measurement","To express the thickness of the skin","To express the Insulin level in blood","To express the Body mass index","To express the Diabetes percentage","To express the age","To express the diabetes outcome 1 is Yes and 0 is No")
+variable_data <- data.frame(variable_name,description)
+kable(variable_data,caption = "Table 2: Data Dictionary",col.names = c("Variable Name","Description"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
+```
+
+
+```{r,echo = FALSE}
+diabetes$Outcome <-factor(diabetes$Outcome)
+```
+### Factors Preview
+
+We start with identifying whether the eight diagnostic measurements are related with diabetes or not. Since our outcome variable is a binary variable, the box plot were used to visualize the relationship between factors and diabetes. The y-axis was defined as the diagnostic measurement result  and x-axis were grouped by female with diabetes or not. The results of all box plots are shown in Figure 1.  
+
+```{r, echo = FALSE}
 p1 <- ggplot(diabetes,aes(x= Outcome, y=Pregnancies,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
   theme_minimal()
 
@@ -61,13 +74,18 @@ p8 <- ggplot(diabetes,aes(x= Outcome, y=Age,color=Outcome)) + geom_boxplot()+lab
   theme_minimal()
 ```
 
-```{r}
+```{r, echo = FALSE}
 p <- ggpubr::ggarrange(p1, p2,p3,p4,p5,p6,p7,p8, ncol=4,nrow = 2,common.legend = TRUE)
 
 ggpubr::annotate_figure(p, top = ggpubr::text_grob("Figure 1: Distributions of Variables Among Each Group", color = "#0F2540",face = "bold", size = 15))
 
 ```
-```{r}
+
+Results reveal that different groups of females have different medians of diagnostic results, which indicate that the factors have linear or nonlinear association with diabetes. 
+
+The below Figure 2 shows the violin plots for each factor to see if these variables are normally distributed or not.
+
+```{r, echo = FALSE}
 v1 <- ggplot(diabetes, aes(x=Outcome, y=Pregnancies,fill=Outcome)) + 
   geom_violin()+labs(x="")+scale_fill_manual(labels = c("Normal", "Diabetes"), values = c("mistyrose", "plum3"))+theme_minimal()
 
@@ -93,24 +111,50 @@ v8 <- ggplot(diabetes, aes(x=Outcome, y=Age,color=Outcome)) +
   geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
 ```
 
-```{r}
+```{r, echo = FALSE}
 v <- ggpubr::ggarrange(v1, v2,v3,v4,v5,v6,v7,v8, ncol=4,nrow = 2,common.legend = TRUE)
 
 ggpubr::annotate_figure(v, top = ggpubr::text_grob("Figure 2: Distributions of Variables Among Each Group", color = "#0F2540",face = "bold", size = 15))
 ```
 
-```{r}
+```{r, echo = FALSE}
 diabetes$Outcome <-as.numeric(diabetes$Outcome)
 res <- cor(diabetes%>%select(Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome))
 ```
 
-```{r}
+
+### Collinearity test
+
+
+Before fitting the model, the collinearity between different factors needed to be tested. We used the corrplot function to test the collinearity. The plot result shows that there no significant correlation relationship between all eight variables, although the SkinThickness variable and Insulin variable has a light purple color which indicate they might correlated, the index is only about 0.6 which is not significantly correlated and also we do not include the SkinThickness variable in the final model which will be discussed later. Thus, we can conclude that all the eight variables can be used to fit a model and find the prediction rate of diabetes.
+
+
+```{r, echo = FALSE}
 col <- colorRampPalette(c("violetred1", "white", "mediumpurple"))(20)
 corrplot(res, type = "upper", order = "hclust", 
          tl.col = "lavenderblush4", tl.srt = 40,bg = "lavenderblush2",col =col,tl.cex = 0.7)
 ```
 
-```{r}
+
+
+### Two specific factors exploration
+
+Since the age and pregnancy factors are most concerned. We use the bar plot to visualize the proportion of diabetes among stratified age groups and different numbers of pregnancies.
+
+
+####  Age
+
+“Men generally have heart disease in their 40’s and 50’s, about a decade before women. But this is generally not true for diabetic women. For diabetic women, the cardiovascular risk occurs earlier. Diabetes takes away much of the protection premenopausal women would normally get from estrogen.”                                                            —Kapur, A., & Seshiah, V. (2017)   
+
+The diabetes proportion gets higher with the increase of age variable, and the age group of 50-60 years old has the highest diabetes proportion. Generally, age factors have a positive association with diabetes proportion.
+
+
+####  Pregnancy
+
+We also examine the association between pregnancy and diabetes proportion, as it can be seen in the plot below, as the pregnancy frequency increases the diabetes proportion also increases, and when the pregnancy frequency is 17 times,  diabetes proportion reaches a hundred percent.
+
+
+```{r, echo = FALSE}
 df <- group_by(diabetes,Pregnancies) %>%mutate(percent = sum(Outcome)/n())
 df <- data.frame(
   Pregnancies=c(0:15,17),

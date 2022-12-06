@@ -9,16 +9,26 @@ output:
 
 ### Motivation 
 
-At one time, diabetes was always referred to as a disease of the elderly, yet in fact the incidence of diabetes in young people has increased by nearly 70% in the last decade. With the improvement of living standard, material life is very rich, snacks are varied and many young people do not like to drink plain water, but prefer beverages; the popularity of computers and the Internet has significantly reduced outdoor exercise and lack of physical activity among young people; moreover, young people are living a fast-paced life, often stay up late, and have long-term mental tension, which increases the secretion of hormones that raise blood glucose in the body, such as glucocorticoids and adrenaline. The prevalence of diabetes among young people is increasing at this stage. Therefore, our project uses a logistic regression model to predict the factors that lead to diabetes and to identify the key factors that lead to diabetes, and then to evaluate the health of the users to determine the probability of diabetes.
+At one time, diabetes was always referred to as a disease of the elderly, yet in fact the incidence of diabetes in young people has increased by nearly 70% in the last decade. With the improvement of living standard, material life grows richer, various snacks and high-sugar beverages appear in the market, resulting in the youth’s distaste for plain water. Moreover, the popularity of computers and the internet has significantly reduced the youths’ outdoor exercises frequencies leading to lack in physical activities. Besides, since the youths usually live a fast-paced life, they often stay up late and suffer from serious long-term mental tension, which increases the secretion of hormones that raises blood glucose in the body, such as glucocorticoids and adrenaline. As a result, the prevalence of diabetes increases dramatically among young people nowadays.   
+
+In addition, epidemiological studies have found that people with diabetes are more than twice as likely to develop cardiovascular disease as non-diabetics, including premenopausal women, a group that is generally at lower risk for cardiovascular disease. Although diabetes affects men and women equally, women are more severely affected by its consequences. Women are more susceptible to blindness due to diabetic retinopathy compared to men. Pregnancy may worsen pre-existing diabetic retinopathy and kidney disease. Women with diabetes are four times more likely to have a stroke than non-diabetes. Besides vulnerability to diabetes, women also have less access to healthcare services especially in low-income countries where economic, political, and social discrimination is severe. As a result, compared to men, women are more vulnerable, have less access to treatment and health care, and less support to cope with the consequences of diabetes.  
+
+Therefore, our project aims to find a model to diagnostically predict whether a female patient has diabetes based on diagnostic measurements included in the dataset with the hope of increasing prodromal care before getting the disease and promoting health keeping behaviors.
+
 
 ### Related work 
 
-After reading the literature “Incidence Trends of Type 1 and Type 2 Diabetes among Youths, 2002-2012”, we realized the importance of diabetes prevention in new generation which inspired us to analyze the factors that lead to diabetes and further how to predict the diabetes.
+After reading the literature “Incidence Trends of Type 1 and Type 2 Diabetes among Youths, 2002-2012”, we realized the importance of diabetes prevention in the new generation which inspired us to analyze the factors that lead to diabetes and further how to predict the diabetes.  
+
+
+Kapur, A., & Seshiah, V. (2017). [Women & diabetes: Our right to a healthy future.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5861464/) The Indian journal of medical research, 146(5), 553–556. 
 
 
 ### Initial questions 
 
-### Data: Source, scraping method, cleaning, etc.
+We are trying to find which factors would help us predict diabetes among all the eight possible variables.
+
+### Data
 
 ### Exploratory analysis
 

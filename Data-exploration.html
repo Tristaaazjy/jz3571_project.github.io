@@ -35,6 +35,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -368,49 +370,458 @@ div.tocify {
 </div>
 
 
-<center>
-<image src='images/diabete.jpeg' style = "width:85%">
-</center>
-<div id="backgroud" class="section level3">
-<h3>Backgroud</h3>
-<p>Diabetes is a chronic health condition that affects how your body
-turns food into energy. Most people’s bodies naturally produce the
-hormone insulin, which helps convert sugars from the food we eat into
-energy that the body can use or store for later. When you have diabetes,
-your body either doesn’t make insulin or doesn’t use its insulin well,
-causing your blood sugar to rise. High blood sugar levels can cause
-serious health problems over time.</p>
-<center>
-<iframe width="750" height="515" src="https://www.youtube.com/embed/wZAjVQWbMlE" frameborder="0" allowfullscreen>
-</iframe>
-</center>
+<div id="data-preview" class="section level3">
+<h3>Data Preview</h3>
+<p>Our dataset include 9 varibles, which are shown in table 1. Outcome
+is the dependent variable we aim to prredict based on other
+variables.</p>
+<table class="table" style>
+<caption>
+Table 1: Raw Data
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Pregnancies
+</th>
+<th style="text-align:right;">
+Glucose
+</th>
+<th style="text-align:right;">
+BloodPressure
+</th>
+<th style="text-align:right;">
+SkinThickness
+</th>
+<th style="text-align:right;">
+Insulin
+</th>
+<th style="text-align:right;">
+BMI
+</th>
+<th style="text-align:right;">
+DiabetesPedigreeFunction
+</th>
+<th style="text-align:right;">
+Age
+</th>
+<th style="text-align:right;">
+Outcome
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+148
+</td>
+<td style="text-align:right;">
+72
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+33.6
+</td>
+<td style="text-align:right;">
+0.627
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+85
+</td>
+<td style="text-align:right;">
+66
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+26.6
+</td>
+<td style="text-align:right;">
+0.351
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+183
+</td>
+<td style="text-align:right;">
+64
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+23.3
+</td>
+<td style="text-align:right;">
+0.672
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+89
+</td>
+<td style="text-align:right;">
+66
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+94
+</td>
+<td style="text-align:right;">
+28.1
+</td>
+<td style="text-align:right;">
+0.167
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+137
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+168
+</td>
+<td style="text-align:right;">
+43.1
+</td>
+<td style="text-align:right;">
+2.288
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+116
+</td>
+<td style="text-align:right;">
+74
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+25.6
+</td>
+<td style="text-align:right;">
+0.201
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+78
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+88
+</td>
+<td style="text-align:right;">
+31.0
+</td>
+<td style="text-align:right;">
+0.248
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+115
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+35.3
+</td>
+<td style="text-align:right;">
+0.134
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+197
+</td>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+543
+</td>
+<td style="text-align:right;">
+30.5
+</td>
+<td style="text-align:right;">
+0.158
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2 gives the preview about each variable’s intended
+measurement.</p>
+<table class="table" style>
+<caption>
+Table 2: Data Dictionary
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable Name
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Pregnancies
+</td>
+<td style="text-align:left;">
+To express the Number of pregnancies
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Glucose
+</td>
+<td style="text-align:left;">
+To express the Glucose level in blood
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BloodPressure
+</td>
+<td style="text-align:left;">
+To express the Blood pressure measurement
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SkinThickness
+</td>
+<td style="text-align:left;">
+To express the thickness of the skin
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Insulin
+</td>
+<td style="text-align:left;">
+To express the Insulin level in blood
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMI
+</td>
+<td style="text-align:left;">
+To express the Body mass index
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DiabetesPedigreeFunction
+</td>
+<td style="text-align:left;">
+To express the Diabetes percentage
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Age
+</td>
+<td style="text-align:left;">
+To express the age
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Outcome
+</td>
+<td style="text-align:left;">
+To express the diabetes outcome 1 is Yes and 0 is No
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="website-overview" class="section level3">
-<h3>Website overview</h3>
-<p>Data for this project was required from the National Institute of
-Diabetes and Digestive and Kidney Diseases.</p>
-<p>In the Exploratory Analysis tab, you will find:</p>
-<ul>
-<li>Data Overview</li>
-<li>Distribution of Independent Variables through visualization</li>
-<li>Analyses of collinearity through collinearity test</li>
-<li>Association of Age and Pregnancies with Diabetes Occurrence</li>
-</ul>
-<p>In the Statistical Analysis tab, you will find:</p>
-<ul>
-<li>Logistic Model Selection Predicting Diabetes Occurrence through
-AIC</li>
-<li>Diagnostics of Logistic Model</li>
-</ul>
-<p>The interactive map tab will take you to a dashboard where you can
-explore how medical predictors affect the outcome of diabetes.</p>
+<div id="factors-preview" class="section level3">
+<h3>Factors Preview</h3>
+<p>We start with identifying whether the eight diagnostic measurements
+are related with diabetes or not. Since our outcome variable is a binary
+variable, the box plot were used to visualize the relationship between
+factors and diabetes. The y-axis was defined as the diagnostic
+measurement result and x-axis were grouped by female with diabetes or
+not. The results of all box plots are shown in Figure 1.</p>
+<p><img src="Data-exploration_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Results reveal that different groups of females have different
+medians of diagnostic results, which indicate that the factors have
+linear or nonlinear association with diabetes.</p>
+<p>The below Figure 2 shows the violin plots for each factor to see if
+these variables are normally distributed or not.</p>
+<p><img src="Data-exploration_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
-<div id="collaborators" class="section level3">
-<h3>Collaborators</h3>
-<p>Yining Chen (yc4198)</p>
-<p>Zhaohua Chunyu (zc2691)</p>
-<p>Qingzhen Sun (qs2260)</p>
-<p>Junyan Zhu(jz3571)</p>
+<div id="collinearity-test" class="section level3">
+<h3>Collinearity test</h3>
+<p>Before fitting the model, the collinearity between different factors
+needed to be tested. We used the corrplot function to test the
+collinearity. The plot result shows that there no significant
+correlation relationship between all eight variables, although the
+SkinThickness variable and Insulin variable has a light purple color
+which indicate they might correlated, the index is only about 0.6 which
+is not significantly correlated and also we do not include the
+SkinThickness variable in the final model which will be discussed later.
+Thus, we can conclude that all the eight variables can be used to fit a
+model and find the prediction rate of diabetes.</p>
+<p><img src="Data-exploration_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="two-specific-factors-exploration" class="section level3">
+<h3>Two specific factors exploration</h3>
+<p>Since the age and pregnancy factors are most concerned. We use the
+bar plot to visualize the proportion of diabetes among stratified age
+groups and different numbers of pregnancies.</p>
+<div id="age" class="section level4">
+<h4>Age</h4>
+<p>“Men generally have heart disease in their 40’s and 50’s, about a
+decade before women. But this is generally not true for diabetic women.
+For diabetic women, the cardiovascular risk occurs earlier. Diabetes
+takes away much of the protection premenopausal women would normally get
+from estrogen.” —Kapur, A., &amp; Seshiah, V. (2017)</p>
+<p>The diabetes proportion gets higher with the increase of age
+variable, and the age group of 50-60 years old has the highest diabetes
+proportion. Generally, age factors have a positive association with
+diabetes proportion.</p>
+</div>
+<div id="pregnancy" class="section level4">
+<h4>Pregnancy</h4>
+<p>We also examine the association between pregnancy and diabetes
+proportion, as it can be seen in the plot below, as the pregnancy
+frequency increases the diabetes proportion also increases, and when the
+pregnancy frequency is 17 times, diabetes proportion reaches a hundred
+percent.</p>
+<p><img src="Data-exploration_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
 </div>
 
 
