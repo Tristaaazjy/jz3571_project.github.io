@@ -22,6 +22,9 @@ library(tidyverse)
 library(caret)
 library(kableExtra)
 library(pROC)
+library(gridExtra)
+library(car)
+library(broom)
 ```
 
 ```{r}
@@ -38,6 +41,8 @@ summary(fullmodel)
 
 ### Stepwise regression
 
+The reason we use AIC is because Bayesian information criterion (BIC) usually results in more parsimonious model than the Akaike information criterion.
+
 ```{r}
 stepmodel <- stepAIC(fullmodel,trace = F)
 stepmodel$anova
@@ -46,53 +51,36 @@ summary(stepmodel)
 
 ###  Best subset regression
 
+While stepwise regression select variables sequentially, the best subsets approach aims to find out the best fit model from all possible subset models.
 Best subset regression selects the best model from all possible subsets according to some goodness-of-fit criteria.
 ```{r}
 subsetmodel <- bestglm(diabetes,IC="AIC",family = binomial)
 subsetmodel
 ```
 ```{r}
-regsubsetsObj <- regsubsets(Outcome ~. ,data = diabetes,nvmax = 8)
-plot(regsubsetsObj, scale = "adjr2") 
+subsetmodel<-glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=diabetes)
+summary(subsetmodel)
 ```
+## Compare models
 
 
 ## Cross validation
 
-```{r}
-cv_df =
-  crossv_mc(diabetes, 100) %>% 
-  mutate(
-    train = map(train, as_tibble),
-    test = map(test, as_tibble))
-```
+The validation set approach consists of randomly splitting the data into two sets: one set is used to train the model and the remaining other set sis used to test the model.
+
+The process works as follow:
+
+- Build (train) the model on the training data set
+- Apply the model to the test data set to predict the outcome of new unseen observations
+- Quantify the prediction error as the mean squared difference between the observed and the predicted outcome values.
+
+WE split the data set so that 80% is used for training a regression model and 20% is used to evaluate the model performance.
+
+ALL criterions are similar, so we choose the simplest model.(stepmodel)
+
 
 ```{r}
-cv_df = 
-  cv_df %>% 
-  mutate(
-    fullmodel = map(train, ~glm(Outcome ~. ,data =.x)),
-    stepmodel     = map(train, ~glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age, data=.x)),
-    subsetmodel  = map(train, ~glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=.x))) %>% 
-  mutate(
-    rmse_full = map2_dbl(fullmodel, test, ~rmse(model = .x, data = .y)),
-    rmse_step    = map2_dbl(stepmodel, test, ~rmse(model = .x, data = .y)),
-    rmse_subset = map2_dbl(subsetmodel, test, ~rmse(model = .x, data = .y))
-    )
-```
-
-```{r}
-cv_df %>% 
-  select(starts_with("rmse")) %>% 
-  pivot_longer(
-    everything(),
-    names_to = "model", 
-    values_to = "rmse",
-    names_prefix = "rmse_") %>% 
-  mutate(model = fct_inorder(model)) %>% 
-  ggplot(aes(x = model, y = rmse)) + geom_violin()
-```
-```{r}
+set.seed(123)
 training.samples <- diabetes$Outcome %>%
   createDataPartition(p = 0.8, list = FALSE)
 train.data  <- diabetes[training.samples, ]
@@ -100,36 +88,93 @@ test.data <- diabetes[-training.samples, ]
 ```
 
 ```{r}
-predictions <- fullmodel %>% predict(test.data) 
+full_train <- glm(Outcome ~. ,data = train.data)
+predictions <- full_train %>% predict(test.data) 
 predict.class <- ifelse(predictions < 0.5,0,1)
-mean(predict.class==test.data$Outcome)
-
-```
-
-```{r}
-predictions <- stepmodel %>% predict(test.data) 
-predict.class <- ifelse(predictions < 0.5,0,1)
+data.frame( R2 = R2(predictions, test.data$Outcome),
+            RMSE = RMSE(predictions, test.data$Outcome),
+            MAE = MAE(predictions, test.data$Outcome))
 mean(predict.class==test.data$Outcome)
 ```
 
 ```{r}
-subsetmodel <- glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=diabetes)
-predictions <- subsetmodel %>% predict(test.data) 
+step_train <- glm(Outcome ~ Pregnancies + Glucose + BloodPressure + 
+    BMI + DiabetesPedigreeFunction + Age, data = train.data)
+predictions <- step_train %>% predict(test.data) 
 predict.class <- ifelse(predictions < 0.5,0,1)
+data.frame( R2 = R2(predictions, test.data$Outcome),
+            RMSE = RMSE(predictions, test.data$Outcome),
+            MAE = MAE(predictions, test.data$Outcome))
+mean(predict.class==test.data$Outcome)
+```
+
+```{r}
+subset_train <- glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=train.data)
+predictions <- subset_train %>% predict(test.data) 
+predict.class <- ifelse(predictions < 0.5,0,1)
+data.frame( R2 = R2(predictions, test.data$Outcome),
+            RMSE = RMSE(predictions, test.data$Outcome),
+            MAE = MAE(predictions, test.data$Outcome))
 mean(predict.class==test.data$Outcome)
 ```
 
 
-## Multicollinearity check
+```{r}
+criterion <- c("AIC", "AUC", "RMSE", "MAE","Prediction Accuracy")
+full_val <- c(783.82,0.7135,0.4249,0.3468,0.7451)
+step_val <- c(781.44,0.7107,0.4249,0.3467,0.7451)
+sub_val <- c(781.84,0.7135,0.4239,0.3461,0.7451)
+variable_data <- data.frame(criterion,full_val,step_val,sub_val)
+kable(variable_data,caption = "Model Comparison", col.names = c("Criterion","Full Model","Stepwise model","Subset model"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
+```
+Root Mean Squared Error (RMSE): As the name suggests it is the square root of the averaged squared difference between the actual value and the predicted value of the target variable. It gives the average prediction error made by the model, thus decrease the RMSE value to increase the accuracy of the model.
 
-The VIFs of all the X’s are below 2 now. So, the condition of multicollinearity is satisfied.
+Mean Absolute Error (MAE): This metric gives the absolute difference between the actual values and the values predicted by the model for the target variable. If the value of the outliers does not have much to do with the accuracy of the model, then MAE can be used to evaluate the performance of the model. Its value must be less in order to make better models.
+
+
+#### What is ROC and AUC?
+
+An ROC curve (receiver operating characteristic curve) is a graph showing the performance of a classification model at all classification thresholds. In technical terms, the ROC curve is plotted between the True Positive Rate and the False Positive Rate of a model.
+
+AUC stands for "Area under the ROC Curve." That is, AUC measures the entire two-dimensional area underneath the entire ROC curve.
+Higher the AUC score, better is the classification of the predicted values.
+For example, consider a model to predict and classify whether the outcome is 
+'Diabetes" or ‘Normal’.So, if the AUC score is high, it indicates that the model is capable of classifying 'Diabetes" as 'Diabetes" and ‘Normal’ as ‘Normal’ more efficiently.
+
+#### Why use AUC?
+
+AUC is desirable for the following two reasons:
+
+AUC is scale-invariant. It measures how well predictions are ranked, rather than their absolute values.
+AUC is classification-threshold-invariant. It measures the quality of the model's predictions irrespective of what classification threshold is chosen.
 
 ```{r}
-all_vifs <- car::vif(stepmodel)
-print(all_vifs)
+predictions <- full_train %>% predict(test.data) 
+predict.class <- ifelse(predictions < 0.5,0,1)
+rocobj1 <- roc(test.data$Outcome, predict.class)
+rocobj1
+```
+
+```{r}
+predictions <- step_train %>% predict(test.data) 
+predict.class <- ifelse(predictions < 0.5,0,1)
+rocobj2 <- roc(test.data$Outcome, predict.class)
+rocobj2
+```
+
+```{r}
+predictions <- subset_train %>% predict(test.data) 
+predict.class <- ifelse(predictions < 0.5,0,1)
+rocobj3 <- roc(test.data$Outcome, predict.class)
+rocobj3
 ```
 
 
+## Model interpretation
+
+```{r}
+exp(stepmodel$coefficients)
+```
 
 ```{r}
 variable_name <- c("Pregnancies", "Glucose", "Blood Pressure", "BMI", "Diabetes Pedigree Function","Age")
@@ -139,12 +184,72 @@ variable_data <- data.frame(variable_name,val,p)
 kable(variable_data,caption = "Parameter estimates for the logistic model", col.names = c("Parameters","Exponentiated Coefficients/Odds Ratio","P-values"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
 ```
 
+## Assumptions Check
+
+### Assumption 1— Appropriate Outcome Type
+
+By default, logistic regression assumes that the outcome variable is binary, where the number of outcomes is two.
+
+### Assumption 2 — Linearity of independent variables and log-odds
 ```{r}
-exp(stepmodel$coefficients)
+p1<-crPlot(stepmodel, "Pregnancies")
+p2<-crPlot(stepmodel, "Glucose")
+p3<-crPlot(stepmodel, "BloodPressure")
+p4<-crPlot(stepmodel, "BMI")
+p5<-crPlot(stepmodel, "DiabetesPedigreeFunction")
+p6<-crPlot(stepmodel, "Age")
+grid.arrange(p1, p2, p3, p4,p5,p6, ncol=3)
 ```
 
-### Diagnostics
+### Assumption 3— No strongly influential outliers
+
+Influential values are extreme individual data points that can alter the quality of the logistic regression model.We can use Cook’s Distance to determine the influence of a data point, and it is calculated based on its residual and leverage. It summarizes the changes in the regression model when that particular (ith) observation is removed.
+
+The most extreme values in the data can be examined by visualizing the Cook’s distance values. Here we label the top 3 largest values:
+
+Note that, not all outliers are influential observations. To check whether the data contains potential influential observations, the standardized residual error can be inspected. Data points with an absolute standardized residuals above 3 represent possible outliers and may deserve closer attention.
+
 ```{r}
-rocobj <- roc(test.data$Outcome, predict.class)
-rocobj
+plot(stepmodel, which = 4, id.n = 3)
 ```
+
+### Assumption 4 — Absence of Multicollinearity
+
+Multicollinearity corresponds to a situation where the data contain highly correlated independent variables. This is a problem because it reduces the precision of the estimated coefficients, which weakens the statistical power of the logistic regression model
+
+Variance Inflation Factor (VIF) measures the degree of multicollinearity in a set of independent variables.
+
+Mathematically, it is equal to the ratio of the overall model variance to the variance of a model that includes only that single independent variable.
+
+The smallest possible value for VIF is 1 (i.e., a complete absence of collinearity). As a rule of thumb, a VIF value that exceeds 5 or 10 indicates a problematic amount of multicollinearity.
+
+```{r}
+all_vifs <- car::vif(stepmodel)
+print(all_vifs) %>% tidy()%>%
+  mutate(Variables = names,
+         VIF = x)%>%
+  dplyr::select(Variables,VIF)%>%
+  knitr::kable(digits = 3)
+```
+
+### Assumption 5— Independence of observations
+
+The observations must be independent of each other, i.e., they should not come from repeated or paired data. This means that each observation is not influenced by or related to the rest of the observations.
+
+This independence assumption is automatically met for our dataset since the data consists of individual records.
+
+We can also check this by creating a Residual Series plot where we plot the deviance residuals of the logit model against the index numbers of the observations.Since the residuals in the plot above appear to be randomly scattered around the centerline of zero, we can infer (visually) that the assumption is satisfied.
+
+```{r}
+model.data <- augment(stepmodel) %>% 
+  mutate(index = 1:n()) 
+ggplot(model.data, aes(index, .std.resid)) + 
+  geom_point(aes(color = factor(Outcome)), alpha = .5) +
+  theme_bw()+
+  labs(title="Residual Series Plot",y="Deviance Residuals")
+```
+
+### Assumption 6 — Sufficiently large sample size
+There should be an adequate number of observations for each independent variable in the dataset to avoid creating an overfit model.
+
+A common way to determine a large sample size is that the total number of observations should be greater than 500.

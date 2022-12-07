@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Yining Chen" />
+
+<meta name="date" content="2022-12-02" />
+
+<title>Statistical Analysis</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="Data-exploration.html">Exploratory statitics</a>
+</li>
+<li>
+  <a href="descriptive_statistics.html">Descriptive statitics</a>
+</li>
+<li>
+  <a href="dashboard.html">Mapping</a>
+</li>
+<li>
+  <a href="project_report.html">Project Report</a>
+</li>
+<li>
+  <a href="mailto:&lt;you@youremail.com&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/&lt;YOUR_GH_NAME&gt;/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Statistical Analysis</h1>
+<h4 class="author">Yining Chen</h4>
+<h4 class="date">2022-12-02</h4>
+
+</div>
+
+
+<pre class="r"><code>library(dplyr)
+library(MASS)
+library(leaps)
+library(bestglm)
+library(mgcv)
+library(modelr)
+library(purrr)
+library(ggplot2)
+library(tidyverse)
+library(caret)
+library(kableExtra)
+library(pROC)
+library(gridExtra)
+library(car)
+library(broom)</code></pre>
+<pre class="r"><code>diabetes &lt;- read.csv(&quot;diabetes.csv&quot;)</code></pre>
+<div id="full-model" class="section level3">
+<h3>Full Model</h3>
+<pre class="r"><code>fullmodel &lt;- glm(Outcome ~. ,data = diabetes)
+summary(fullmodel)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Outcome ~ ., data = diabetes)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -1.01348  -0.29513  -0.09541   0.32112   1.24160  
+## 
+## Coefficients:
+##                            Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)              -0.8538943  0.0854850  -9.989  &lt; 2e-16 ***
+## Pregnancies               0.0205919  0.0051300   4.014 6.56e-05 ***
+## Glucose                   0.0059203  0.0005151  11.493  &lt; 2e-16 ***
+## BloodPressure            -0.0023319  0.0008116  -2.873  0.00418 ** 
+## SkinThickness             0.0001545  0.0011122   0.139  0.88954    
+## Insulin                  -0.0001805  0.0001498  -1.205  0.22857    
+## BMI                       0.0132440  0.0020878   6.344 3.85e-10 ***
+## DiabetesPedigreeFunction  0.1472374  0.0450539   3.268  0.00113 ** 
+## Age                       0.0026214  0.0015486   1.693  0.09092 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 0.1601684)
+## 
+##     Null deviance: 174.48  on 767  degrees of freedom
+## Residual deviance: 121.57  on 759  degrees of freedom
+## AIC: 783.82
+## 
+## Number of Fisher Scoring iterations: 2</code></pre>
+</div>
+<div id="model-selection" class="section level2">
+<h2>Model Selection</h2>
+<div id="stepwise-regression" class="section level3">
+<h3>Stepwise regression</h3>
+<p>The reason we use AIC is because Bayesian information criterion (BIC)
+usually results in more parsimonious model than the Akaike information
+criterion.</p>
+<pre class="r"><code>stepmodel &lt;- stepAIC(fullmodel,trace = F)
+stepmodel$anova</code></pre>
+<pre><code>## Stepwise Model Path 
+## Analysis of Deviance Table
+## 
+## Initial Model:
+## Outcome ~ Pregnancies + Glucose + BloodPressure + SkinThickness + 
+##     Insulin + BMI + DiabetesPedigreeFunction + Age
+## 
+## Final Model:
+## Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + 
+##     Age
+## 
+## 
+##              Step Df   Deviance Resid. Df Resid. Dev      AIC
+## 1                                     759   121.5678 783.8218
+## 2 - SkinThickness  1 0.00309149       760   121.5709 781.8413
+## 3       - Insulin  1 0.25258410       761   121.8235 781.4353</code></pre>
+<pre class="r"><code>summary(stepmodel)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Outcome ~ Pregnancies + Glucose + BloodPressure + 
+##     BMI + DiabetesPedigreeFunction + Age, data = diabetes)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -1.10046  -0.29833  -0.09648   0.31272   1.23210  
+## 
+## Coefficients:
+##                            Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)              -0.8362991  0.0843169  -9.919  &lt; 2e-16 ***
+## Pregnancies               0.0209264  0.0051218   4.086 4.86e-05 ***
+## Glucose                   0.0057091  0.0004832  11.815  &lt; 2e-16 ***
+## BloodPressure            -0.0023572  0.0008018  -2.940  0.00338 ** 
+## BMI                       0.0130807  0.0019634   6.662 5.17e-11 ***
+## DiabetesPedigreeFunction  0.1403017  0.0443929   3.160  0.00164 ** 
+## Age                       0.0027917  0.0015323   1.822  0.06886 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 0.1600834)
+## 
+##     Null deviance: 174.48  on 767  degrees of freedom
+## Residual deviance: 121.82  on 761  degrees of freedom
+## AIC: 781.44
+## 
+## Number of Fisher Scoring iterations: 2</code></pre>
+</div>
+<div id="best-subset-regression" class="section level3">
+<h3>Best subset regression</h3>
+<p>While stepwise regression select variables sequentially, the best
+subsets approach aims to find out the best fit model from all possible
+subset models. Best subset regression selects the best model from all
+possible subsets according to some goodness-of-fit criteria.</p>
+<pre class="r"><code>subsetmodel &lt;- bestglm(diabetes,IC=&quot;AIC&quot;,family = binomial)</code></pre>
+<pre><code>## Morgan-Tatar search since family is non-gaussian.</code></pre>
+<pre class="r"><code>subsetmodel</code></pre>
+<pre><code>## AIC
+## BICq equivalent for q in (0.910337349179387, 0.965036759857444)
+## Best Model:
+##                              Estimate   Std. Error    z value     Pr(&gt;|z|)
+## (Intercept)              -8.405136208 0.7167032628 -11.727498 9.214195e-32
+## Pregnancies               0.123172450 0.0320687734   3.840884 1.225919e-04
+## Glucose                   0.035112252 0.0036624713   9.587038 9.064975e-22
+## BloodPressure            -0.013213574 0.0051536754  -2.563913 1.034996e-02
+## Insulin                  -0.001157035 0.0008141589  -1.421142 1.552755e-01
+## BMI                       0.090088589 0.0144619078   6.229371 4.683116e-10
+## DiabetesPedigreeFunction  0.947595358 0.2980062755   3.179783 1.473853e-03
+## Age                       0.014788838 0.0092896771   1.591965 1.113926e-01</code></pre>
+<pre class="r"><code>subsetmodel&lt;-glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=diabetes)
+summary(subsetmodel)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Outcome ~ Pregnancies + Glucose + BloodPressure + 
+##     BMI + DiabetesPedigreeFunction + Age + Insulin, data = diabetes)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -1.01707  -0.29614  -0.09656   0.32073   1.24183  
+## 
+## Coefficients:
+##                            Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)              -0.8537906  0.0854265  -9.994  &lt; 2e-16 ***
+## Pregnancies               0.0205939  0.0051266   4.017 6.48e-05 ***
+## Glucose                   0.0059092  0.0005086  11.619  &lt; 2e-16 ***
+## BloodPressure            -0.0023152  0.0008022  -2.886  0.00401 ** 
+## BMI                       0.0133382  0.0019733   6.759 2.76e-11 ***
+## DiabetesPedigreeFunction  0.1478835  0.0447843   3.302  0.00100 ** 
+## Age                       0.0025991  0.0015393   1.688  0.09173 .  
+## Insulin                  -0.0001721  0.0001370  -1.257  0.20929    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 0.1599617)
+## 
+##     Null deviance: 174.48  on 767  degrees of freedom
+## Residual deviance: 121.57  on 760  degrees of freedom
+## AIC: 781.84
+## 
+## Number of Fisher Scoring iterations: 2</code></pre>
+</div>
+</div>
+<div id="compare-models" class="section level2">
+<h2>Compare models</h2>
+</div>
+<div id="cross-validation" class="section level2">
+<h2>Cross validation</h2>
+<p>The validation set approach consists of randomly splitting the data
+into two sets: one set is used to train the model and the remaining
+other set sis used to test the model.</p>
+<p>The process works as follow:</p>
+<ul>
+<li>Build (train) the model on the training data set</li>
+<li>Apply the model to the test data set to predict the outcome of new
+unseen observations</li>
+<li>Quantify the prediction error as the mean squared difference between
+the observed and the predicted outcome values.</li>
+</ul>
+<p>WE split the data set so that 80% is used for training a regression
+model and 20% is used to evaluate the model performance.</p>
+<p>ALL criterions are similar, so we choose the simplest
+model.(stepmodel)</p>
+<pre class="r"><code>set.seed(123)
+training.samples &lt;- diabetes$Outcome %&gt;%
+  createDataPartition(p = 0.8, list = FALSE)
+train.data  &lt;- diabetes[training.samples, ]
+test.data &lt;- diabetes[-training.samples, ]</code></pre>
+<pre class="r"><code>full_train &lt;- glm(Outcome ~. ,data = train.data)
+predictions &lt;- full_train %&gt;% predict(test.data) 
+predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
+data.frame( R2 = R2(predictions, test.data$Outcome),
+            RMSE = RMSE(predictions, test.data$Outcome),
+            MAE = MAE(predictions, test.data$Outcome))</code></pre>
+<pre><code>##          R2      RMSE      MAE
+## 1 0.2992287 0.3969386 0.336013</code></pre>
+<pre class="r"><code>mean(predict.class==test.data$Outcome)</code></pre>
+<pre><code>## [1] 0.7843137</code></pre>
+<pre class="r"><code>step_train &lt;- glm(Outcome ~ Pregnancies + Glucose + BloodPressure + 
+    BMI + DiabetesPedigreeFunction + Age, data = train.data)
+predictions &lt;- step_train %&gt;% predict(test.data) 
+predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
+data.frame( R2 = R2(predictions, test.data$Outcome),
+            RMSE = RMSE(predictions, test.data$Outcome),
+            MAE = MAE(predictions, test.data$Outcome))</code></pre>
+<pre><code>##          R2      RMSE       MAE
+## 1 0.2960177 0.3978375 0.3374428</code></pre>
+<pre class="r"><code>mean(predict.class==test.data$Outcome)</code></pre>
+<pre><code>## [1] 0.7712418</code></pre>
+<pre class="r"><code>subset_train &lt;- glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=train.data)
+predictions &lt;- subset_train %&gt;% predict(test.data) 
+predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
+data.frame( R2 = R2(predictions, test.data$Outcome),
+            RMSE = RMSE(predictions, test.data$Outcome),
+            MAE = MAE(predictions, test.data$Outcome))</code></pre>
+<pre><code>##          R2      RMSE       MAE
+## 1 0.2993958 0.3968811 0.3360024</code></pre>
+<pre class="r"><code>mean(predict.class==test.data$Outcome)</code></pre>
+<pre><code>## [1] 0.7843137</code></pre>
+<pre class="r"><code>criterion &lt;- c(&quot;AIC&quot;, &quot;AUC&quot;, &quot;RMSE&quot;, &quot;MAE&quot;,&quot;Prediction Accuracy&quot;)
+full_val &lt;- c(783.82,0.7135,0.4249,0.3468,0.7451)
+step_val &lt;- c(781.44,0.7107,0.4249,0.3467,0.7451)
+sub_val &lt;- c(781.84,0.7135,0.4239,0.3461,0.7451)
+variable_data &lt;- data.frame(criterion,full_val,step_val,sub_val)
+kable(variable_data,caption = &quot;Model Comparison&quot;, col.names = c(&quot;Criterion&quot;,&quot;Full Model&quot;,&quot;Stepwise model&quot;,&quot;Subset model&quot;))%&gt;% kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
+<table class="table" style>
+<caption>
+Model Comparison
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Criterion
+</th>
+<th style="text-align:right;">
+Full Model
+</th>
+<th style="text-align:right;">
+Stepwise model
+</th>
+<th style="text-align:right;">
+Subset model
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+AIC
+</td>
+<td style="text-align:right;">
+783.8200
+</td>
+<td style="text-align:right;">
+781.4400
+</td>
+<td style="text-align:right;">
+781.8400
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AUC
+</td>
+<td style="text-align:right;">
+0.7135
+</td>
+<td style="text-align:right;">
+0.7107
+</td>
+<td style="text-align:right;">
+0.7135
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RMSE
+</td>
+<td style="text-align:right;">
+0.4249
+</td>
+<td style="text-align:right;">
+0.4249
+</td>
+<td style="text-align:right;">
+0.4239
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MAE
+</td>
+<td style="text-align:right;">
+0.3468
+</td>
+<td style="text-align:right;">
+0.3467
+</td>
+<td style="text-align:right;">
+0.3461
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Prediction Accuracy
+</td>
+<td style="text-align:right;">
+0.7451
+</td>
+<td style="text-align:right;">
+0.7451
+</td>
+<td style="text-align:right;">
+0.7451
+</td>
+</tr>
+</tbody>
+</table>
+<p>Root Mean Squared Error (RMSE): As the name suggests it is the square
+root of the averaged squared difference between the actual value and the
+predicted value of the target variable. It gives the average prediction
+error made by the model, thus decrease the RMSE value to increase the
+accuracy of the model.</p>
+<p>Mean Absolute Error (MAE): This metric gives the absolute difference
+between the actual values and the values predicted by the model for the
+target variable. If the value of the outliers does not have much to do
+with the accuracy of the model, then MAE can be used to evaluate the
+performance of the model. Its value must be less in order to make better
+models.</p>
+<div id="what-is-roc-and-auc" class="section level4">
+<h4>What is ROC and AUC?</h4>
+<p>An ROC curve (receiver operating characteristic curve) is a graph
+showing the performance of a classification model at all classification
+thresholds. In technical terms, the ROC curve is plotted between the
+True Positive Rate and the False Positive Rate of a model.</p>
+<p>AUC stands for “Area under the ROC Curve.” That is, AUC measures the
+entire two-dimensional area underneath the entire ROC curve. Higher the
+AUC score, better is the classification of the predicted values. For
+example, consider a model to predict and classify whether the outcome is
+‘Diabetes” or ‘Normal’.So, if the AUC score is high, it indicates that
+the model is capable of classifying ‘Diabetes” as ’Diabetes” and
+‘Normal’ as ‘Normal’ more efficiently.</p>
+</div>
+<div id="why-use-auc" class="section level4">
+<h4>Why use AUC?</h4>
+<p>AUC is desirable for the following two reasons:</p>
+<p>AUC is scale-invariant. It measures how well predictions are ranked,
+rather than their absolute values. AUC is
+classification-threshold-invariant. It measures the quality of the
+model’s predictions irrespective of what classification threshold is
+chosen.</p>
+<pre class="r"><code>predictions &lt;- full_train %&gt;% predict(test.data) 
+predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
+rocobj1 &lt;- roc(test.data$Outcome, predict.class)</code></pre>
+<pre><code>## Setting levels: control = 0, case = 1</code></pre>
+<pre><code>## Setting direction: controls &lt; cases</code></pre>
+<pre class="r"><code>rocobj1</code></pre>
+<pre><code>## 
+## Call:
+## roc.default(response = test.data$Outcome, predictor = predict.class)
+## 
+## Data: predict.class in 101 controls (test.data$Outcome 0) &lt; 52 cases (test.data$Outcome 1).
+## Area under the curve: 0.7293</code></pre>
+<pre class="r"><code>predictions &lt;- step_train %&gt;% predict(test.data) 
+predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
+rocobj2 &lt;- roc(test.data$Outcome, predict.class)</code></pre>
+<pre><code>## Setting levels: control = 0, case = 1</code></pre>
+<pre><code>## Setting direction: controls &lt; cases</code></pre>
+<pre class="r"><code>rocobj2</code></pre>
+<pre><code>## 
+## Call:
+## roc.default(response = test.data$Outcome, predictor = predict.class)
+## 
+## Data: predict.class in 101 controls (test.data$Outcome 0) &lt; 52 cases (test.data$Outcome 1).
+## Area under the curve: 0.7194</code></pre>
+<pre class="r"><code>predictions &lt;- subset_train %&gt;% predict(test.data) 
+predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
+rocobj3 &lt;- roc(test.data$Outcome, predict.class)</code></pre>
+<pre><code>## Setting levels: control = 0, case = 1</code></pre>
+<pre><code>## Setting direction: controls &lt; cases</code></pre>
+<pre class="r"><code>rocobj3</code></pre>
+<pre><code>## 
+## Call:
+## roc.default(response = test.data$Outcome, predictor = predict.class)
+## 
+## Data: predict.class in 101 controls (test.data$Outcome 0) &lt; 52 cases (test.data$Outcome 1).
+## Area under the curve: 0.7293</code></pre>
+</div>
+</div>
+<div id="model-interpretation" class="section level2">
+<h2>Model interpretation</h2>
+<pre class="r"><code>exp(stepmodel$coefficients)</code></pre>
+<pre><code>##              (Intercept)              Pregnancies                  Glucose 
+##                0.4333112                1.0211469                1.0057254 
+##            BloodPressure                      BMI DiabetesPedigreeFunction 
+##                0.9976456                1.0131667                1.1506209 
+##                      Age 
+##                1.0027956</code></pre>
+<pre class="r"><code>variable_name &lt;- c(&quot;Pregnancies&quot;, &quot;Glucose&quot;, &quot;Blood Pressure&quot;, &quot;BMI&quot;, &quot;Diabetes Pedigree Function&quot;,&quot;Age&quot;)
+val &lt;- c(1.021,1.006,0.998,1.013,1.151,1.003)
+p &lt;- c(&quot;&lt; 0.05&quot;,&quot;&lt; 0.05&quot;,&quot;&lt; 0.05&quot;,&quot;&lt; 0.05&quot;,&quot;&lt; 0.05&quot;,0.069)
+variable_data &lt;- data.frame(variable_name,val,p)
+kable(variable_data,caption = &quot;Parameter estimates for the logistic model&quot;, col.names = c(&quot;Parameters&quot;,&quot;Exponentiated Coefficients/Odds Ratio&quot;,&quot;P-values&quot;))%&gt;% kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
+<table class="table" style>
+<caption>
+Parameter estimates for the logistic model
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Parameters
+</th>
+<th style="text-align:right;">
+Exponentiated Coefficients/Odds Ratio
+</th>
+<th style="text-align:left;">
+P-values
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Pregnancies
+</td>
+<td style="text-align:right;">
+1.021
+</td>
+<td style="text-align:left;">
+&lt; 0.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Glucose
+</td>
+<td style="text-align:right;">
+1.006
+</td>
+<td style="text-align:left;">
+&lt; 0.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Blood Pressure
+</td>
+<td style="text-align:right;">
+0.998
+</td>
+<td style="text-align:left;">
+&lt; 0.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMI
+</td>
+<td style="text-align:right;">
+1.013
+</td>
+<td style="text-align:left;">
+&lt; 0.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Diabetes Pedigree Function
+</td>
+<td style="text-align:right;">
+1.151
+</td>
+<td style="text-align:left;">
+&lt; 0.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Age
+</td>
+<td style="text-align:right;">
+1.003
+</td>
+<td style="text-align:left;">
+0.069
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="assumptions-check" class="section level2">
+<h2>Assumptions Check</h2>
+<div id="assumption-1-appropriate-outcome-type" class="section level3">
+<h3>Assumption 1— Appropriate Outcome Type</h3>
+<p>By default, logistic regression assumes that the outcome variable is
+binary, where the number of outcomes is two.</p>
+</div>
+<div id="assumption-2-linearity-of-independent-variables-and-log-odds"
+class="section level3">
+<h3>Assumption 2 — Linearity of independent variables and log-odds</h3>
+<pre class="r"><code>p1&lt;-crPlot(stepmodel, &quot;Pregnancies&quot;)</code></pre>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code>p2&lt;-crPlot(stepmodel, &quot;Glucose&quot;)</code></pre>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+<pre class="r"><code>p3&lt;-crPlot(stepmodel, &quot;BloodPressure&quot;)</code></pre>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-3.png" width="672" /></p>
+<pre class="r"><code>p4&lt;-crPlot(stepmodel, &quot;BMI&quot;)</code></pre>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-4.png" width="672" /></p>
+<pre class="r"><code>p5&lt;-crPlot(stepmodel, &quot;DiabetesPedigreeFunction&quot;)</code></pre>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-5.png" width="672" /></p>
+<pre class="r"><code>p6&lt;-crPlot(stepmodel, &quot;Age&quot;)</code></pre>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-6.png" width="672" /></p>
+<pre class="r"><code>grid.arrange(p1, p2, p3, p4,p5,p6, ncol=3)</code></pre>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-7.png" width="672" /></p>
+</div>
+<div id="assumption-3-no-strongly-influential-outliers"
+class="section level3">
+<h3>Assumption 3— No strongly influential outliers</h3>
+<p>Influential values are extreme individual data points that can alter
+the quality of the logistic regression model.We can use Cook’s Distance
+to determine the influence of a data point, and it is calculated based
+on its residual and leverage. It summarizes the changes in the
+regression model when that particular (ith) observation is removed.</p>
+<p>The most extreme values in the data can be examined by visualizing
+the Cook’s distance values. Here we label the top 3 largest values:</p>
+<p>Note that, not all outliers are influential observations. To check
+whether the data contains potential influential observations, the
+standardized residual error can be inspected. Data points with an
+absolute standardized residuals above 3 represent possible outliers and
+may deserve closer attention.</p>
+<pre class="r"><code>plot(stepmodel, which = 4, id.n = 3)</code></pre>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+<div id="assumption-4-absence-of-multicollinearity"
+class="section level3">
+<h3>Assumption 4 — Absence of Multicollinearity</h3>
+<p>Multicollinearity corresponds to a situation where the data contain
+highly correlated independent variables. This is a problem because it
+reduces the precision of the estimated coefficients, which weakens the
+statistical power of the logistic regression model</p>
+<p>Variance Inflation Factor (VIF) measures the degree of
+multicollinearity in a set of independent variables.</p>
+<p>Mathematically, it is equal to the ratio of the overall model
+variance to the variance of a model that includes only that single
+independent variable.</p>
+<p>The smallest possible value for VIF is 1 (i.e., a complete absence of
+collinearity). As a rule of thumb, a VIF value that exceeds 5 or 10
+indicates a problematic amount of multicollinearity.</p>
+<pre class="r"><code>all_vifs &lt;- car::vif(stepmodel)
+print(all_vifs) %&gt;% tidy()%&gt;%
+  mutate(Variables = names,
+         VIF = x)%&gt;%
+  dplyr::select(Variables,VIF)%&gt;%
+  knitr::kable(digits = 3)</code></pre>
+<pre><code>##              Pregnancies                  Glucose            BloodPressure 
+##                 1.427047                 1.143559                 1.154015 
+##                      BMI DiabetesPedigreeFunction                      Age 
+##                 1.148072                 1.036558                 1.555786</code></pre>
+<pre><code>## Warning: &#39;tidy.numeric&#39; is deprecated.
+## See help(&quot;Deprecated&quot;)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Variables
+</th>
+<th style="text-align:right;">
+VIF
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Pregnancies
+</td>
+<td style="text-align:right;">
+1.427
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Glucose
+</td>
+<td style="text-align:right;">
+1.144
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BloodPressure
+</td>
+<td style="text-align:right;">
+1.154
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BMI
+</td>
+<td style="text-align:right;">
+1.148
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DiabetesPedigreeFunction
+</td>
+<td style="text-align:right;">
+1.037
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Age
+</td>
+<td style="text-align:right;">
+1.556
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="assumption-5-independence-of-observations"
+class="section level3">
+<h3>Assumption 5— Independence of observations</h3>
+<p>The observations must be independent of each other, i.e., they should
+not come from repeated or paired data. This means that each observation
+is not influenced by or related to the rest of the observations.</p>
+<p>This independence assumption is automatically met for our dataset
+since the data consists of individual records.</p>
+<p>We can also check this by creating a Residual Series plot where we
+plot the deviance residuals of the logit model against the index numbers
+of the observations.Since the residuals in the plot above appear to be
+randomly scattered around the centerline of zero, we can infer
+(visually) that the assumption is satisfied.</p>
+<pre class="r"><code>model.data &lt;- augment(stepmodel) %&gt;% 
+  mutate(index = 1:n()) 
+ggplot(model.data, aes(index, .std.resid)) + 
+  geom_point(aes(color = factor(Outcome)), alpha = .5) +
+  theme_bw()+
+  labs(title=&quot;Residual Series Plot&quot;,y=&quot;Deviance Residuals&quot;)</code></pre>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+</div>
+<div id="assumption-6-sufficiently-large-sample-size"
+class="section level3">
+<h3>Assumption 6 — Sufficiently large sample size</h3>
+<p>There should be an adequate number of observations for each
+independent variable in the dataset to avoid creating an overfit
+model.</p>
+<p>A common way to determine a large sample size is that the total
+number of observations should be greater than 500.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
