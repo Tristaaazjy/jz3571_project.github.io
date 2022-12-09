@@ -229,11 +229,11 @@ From component residual plots of each variable, we see that all predictors excep
 
 ### Assumption 3— No strongly influential outliers
 
-Influential values are extreme individual data points that can alter the quality of the logistic regression model.We can use Cook’s Distance to determine the influence of a data point, and it is calculated based on its residual and leverage. It summarizes the changes in the regression model when that particular (ith) observation is removed.
+Influential values are extreme individual data points that can alter the quality of the logistic regression model. We used Cook’s Distance to determine the influence of a data point. Cook’s difference is calculated based on residual and leverage of each data point. It summarizes the changes in the regression model when that particular (ith ) observation is removed.
 
 The most extreme values in the data can be examined by visualizing the Cook’s distance values. Here we label the top 3 largest values:
+Note that not all outliers are influential observations. To check whether the data contains potential outliers, the standardized residual error can be inspected. Data points with absolute standardized residuals above 3 represent possible outliers and may deserve closer attention to determine its influence.
 
-Note that, not all outliers are influential observations. To check whether the data contains potential influential observations, the standardized residual error can be inspected. Data points with an absolute standardized residuals above 3 represent possible outliers and may deserve closer attention.
 
 ```{r,fig.height=4,fig.width=5.5,fig.align='center'}
 plot(stepmodel, which = 4, id.n = 3)

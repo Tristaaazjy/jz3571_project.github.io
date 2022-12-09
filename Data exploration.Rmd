@@ -4,6 +4,7 @@ output:
   html_document:
     toc: true
     toc_float: true
+    code_folding: hide
 
 ---
 
@@ -19,14 +20,20 @@ library(ggplot2)
 library(corrplot)
 ```
 
-## Data Preview
+## Data Process and Cleaning
 
-```{r, echo = FALSE}
+```{r}
 diabetes <- read.csv("diabetes.csv")
 ```
-Our dataset include 9 varibles, which are shown in table 1. Outcome is the dependent variable we aim to prredict based on other variables.
+We use one dataset drawn from Kaggel which is originally from the National Institute of Diabetes and Digestive and Kidney. Our dataset includes 768 observations for 9 varibles, which are shown in table 1. 
 
-```{r, echo = FALSE}
+The objective of this dataset is to predict diabetes diagnostically, based on the medical measurements in the data. This dataset contains eight independent medical predictors which might be associated with diabetes occurrence and one dependent variable `outcome`.  The data source is female patients at least 21 years old of Pima Indian heritage..
+
+For the step of data cleaning, we use the read.csv function to load the raw data, reduce the outline data for all eight measurements, and reorganize the variables name. There are no null values, so no action was done to fill the dataset.
+We convert `outcome` to factor data type for future analysis. 
+
+
+```{r}
 kable(head(select(diabetes,Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome),9),caption = "Table 1: Raw Data") %>%
   kable_styling(latex_option = c("hold_position"), position = "left")
 
@@ -35,13 +42,14 @@ diabetes$Outcome <-factor(diabetes$Outcome)
 
 Table 2 gives the preview about each variable's intended measurement.
 
-```{r, echo = FALSE, fig.align='center'}
+```{r, fig.align='center'}
 variable_name <- c("Pregnancies","Glucose","BloodPressure","SkinThickness","Insulin", "BMI","DiabetesPedigreeFunction","Age", "Outcome")
 description <- c("To express the Number of pregnancies","To express the Glucose level in blood","To express the Blood pressure measurement","To express the thickness of the skin","To express the Insulin level in blood","To express the Body mass index","To express the Diabetes percentage","To express the age","To express the diabetes outcome 1 is Yes and 0 is No")
 variable_data <- data.frame(variable_name,description)
 kable(variable_data,caption = "Table 2: Data Dictionary",col.names = c("Variable Name","Description"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
 ```
 
+* The variable diabetes pedigree function indicates the function which scores likelihood of diabetes based on family history.
 
 ```{r,echo = FALSE}
 diabetes$Outcome <-factor(diabetes$Outcome)
@@ -51,7 +59,7 @@ diabetes$Outcome <-factor(diabetes$Outcome)
 
 We start with identifying whether the eight diagnostic measurements are related with diabetes or not. Since our outcome variable is a binary variable, the box plot were used to visualize the relationship between factors and diabetes. The y-axis was defined as the diagnostic measurement result  and x-axis were grouped by female with diabetes or not. The results of all box plots are shown in Figure 1.  
 
-```{r, echo = FALSE, fig.align='center'}
+```{r, fig.align='center'}
 p1 <- ggplot(diabetes,aes(x= Outcome, y=Pregnancies,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
   theme_minimal()
 
@@ -132,7 +140,7 @@ res <- cor(diabetes%>%select(Pregnancies,Glucose,BloodPressure,SkinThickness,Ins
 Before fitting the model, the collinearity between different factors needed to be tested. We used the corrplot function to test the collinearity. The plot result shows that there no significant correlation relationship between all eight variables, although the SkinThickness variable and Insulin variable has a light purple color which indicate they might correlated, the index is only about 0.6 which is not significantly correlated and also we do not include the SkinThickness variable in the final model which will be discussed later. Thus, we can conclude that all the eight variables can be used to fit a model and find the prediction rate of diabetes.
 
 
-```{r, echo = FALSE, fig.align='center'}
+```{r, fig.align='center'}
 col <- colorRampPalette(c("violetred", "white", "mediumpurple2"))(20)
 corrplot(res, type = "upper", order = "hclust", 
          tl.col = "lavenderblush4", tl.srt = 40,bg = "lavenderblush2",col =col,tl.cex = 0.6)
@@ -150,7 +158,7 @@ Since the age and pregnancy factors are most concerned. We use the bar plot to v
 
 The diabetes proportion gets higher with the increase of age variable, and the age group of 50-60 years old has the highest diabetes proportion. Generally, age factors have a positive association with diabetes proportion.
 
-```{r, echo = FALSE, fig.align='center'}
+```{r, fig.align='center'}
 diabetes <- diabetes %>% 
   mutate(Agegroup = case_when(Age < 30 ~ "20+", 
                               30 <= Age & Age < 40 ~ "30+", 
@@ -178,7 +186,7 @@ ggplot(df, aes(x=Agegroup, y=Percentage)) +
 We also examine the association between pregnancy and diabetes proportion, as it can be seen in the plot below, as the pregnancy frequency increases the diabetes proportion also increases, and when the pregnancy frequency is 17 times,  diabetes proportion reaches a hundred percent.
 
 
-```{r, echo = FALSE, fig.align='center'}
+```{r, fig.align='center'}
 df <- group_by(diabetes,Pregnancies) %>%mutate(percent = sum(Outcome)/n())
 df <- data.frame(
   Pregnancies=c(0:15,17),
