@@ -6,7 +6,7 @@ navbar:
     - text: "Exploratory statitics"
       href: Data-exploration.html
     - text: "Descriptive statitics"
-      href: descriptive_statistics.html
+      href: StatisticaL-Analysis.html
     - text: "Mapping"
       href: dashboard.html
     - text: "Project Report"
