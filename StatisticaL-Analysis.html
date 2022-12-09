@@ -559,8 +559,6 @@ unseen observations</li>
 <li>Quantify the prediction error as the mean squared difference between
 the observed and the predicted outcome values.</li>
 </ul>
-<p>WE split the data set so that 80% is used for training a regression
-model and 20% is used to evaluate the model performance.</p>
 <p>ALL criterions are similar, so we choose the simplest
 model.(stepmodel)</p>
 <pre class="r"><code>criterion &lt;- c(&quot;AIC&quot;, &quot;AUC&quot;, &quot;RMSE&quot;, &quot;MAE&quot;,&quot;Prediction Accuracy&quot;)
@@ -568,10 +566,10 @@ full_val &lt;- c(783.82,0.7135,0.4249,0.3468,0.7451)
 step_val &lt;- c(781.44,0.7107,0.4249,0.3467,0.7451)
 sub_val &lt;- c(781.84,0.7135,0.4239,0.3461,0.7451)
 variable_data &lt;- data.frame(criterion,full_val,step_val,sub_val)
-kable(variable_data,caption = &quot;Model Comparison&quot;, col.names = c(&quot;Criterion&quot;,&quot;Full Model&quot;,&quot;Stepwise model&quot;,&quot;Subset model&quot;))%&gt;% kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
+kable(variable_data,caption = &quot;Table 1.Model Comparison&quot;, col.names = c(&quot;Criterion&quot;,&quot;Full Model&quot;,&quot;Stepwise model&quot;,&quot;Subset model&quot;))%&gt;% kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
 <table class="table" style>
 <caption>
-Model Comparison
+Table 1.Model Comparison
 </caption>
 <thead>
 <tr>
@@ -662,95 +660,85 @@ Prediction Accuracy
 </tr>
 </tbody>
 </table>
-<p>Root Mean Squared Error (RMSE): As the name suggests it is the square
-root of the averaged squared difference between the actual value and the
-predicted value of the target variable. It gives the average prediction
-error made by the model, thus decrease the RMSE value to increase the
-accuracy of the model.</p>
-<p>Mean Absolute Error (MAE): This metric gives the absolute difference
-between the actual values and the values predicted by the model for the
-target variable. If the value of the outliers does not have much to do
-with the accuracy of the model, then MAE can be used to evaluate the
-performance of the model. Its value must be less in order to make better
-models.</p>
-<div id="what-is-roc-and-auc" class="section level4">
-<h4>What is ROC and AUC?</h4>
-<p>An ROC curve (receiver operating characteristic curve) is a graph
-showing the performance of a classification model at all classification
-thresholds. In technical terms, the ROC curve is plotted between the
-True Positive Rate and the False Positive Rate of a model.</p>
-<p>AUC stands for “Area under the ROC Curve.” That is, AUC measures the
-entire two-dimensional area underneath the entire ROC curve. Higher the
-AUC score, better is the classification of the predicted values. For
-example, consider a model to predict and classify whether the outcome is
-‘Diabetes” or ‘Normal’.So, if the AUC score is high, it indicates that
-the model is capable of classifying ‘Diabetes” as ’Diabetes” and
-‘Normal’ as ‘Normal’ more efficiently.</p>
 </div>
-<div id="why-use-auc" class="section level4">
-<h4>Why use AUC?</h4>
-<p>AUC is desirable for the following two reasons:</p>
-<p>AUC is scale-invariant. It measures how well predictions are ranked,
-rather than their absolute values. AUC is
-classification-threshold-invariant. It measures the quality of the
-model’s predictions irrespective of what classification threshold is
-chosen.</p>
-<pre class="r"><code>predictions &lt;- full_train %&gt;% predict(test.data) 
-predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
-rocobj1 &lt;- roc(test.data$Outcome, predict.class)</code></pre>
-<pre><code>## Setting levels: control = 0, case = 1</code></pre>
-<pre><code>## Setting direction: controls &lt; cases</code></pre>
-<pre class="r"><code>rocobj1</code></pre>
-<pre><code>## 
-## Call:
-## roc.default(response = test.data$Outcome, predictor = predict.class)
-## 
-## Data: predict.class in 101 controls (test.data$Outcome 0) &lt; 52 cases (test.data$Outcome 1).
-## Area under the curve: 0.7293</code></pre>
-<pre class="r"><code>predictions &lt;- step_train %&gt;% predict(test.data) 
-predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
-rocobj2 &lt;- roc(test.data$Outcome, predict.class)</code></pre>
-<pre><code>## Setting levels: control = 0, case = 1</code></pre>
-<pre><code>## Setting direction: controls &lt; cases</code></pre>
-<pre class="r"><code>rocobj2</code></pre>
-<pre><code>## 
-## Call:
-## roc.default(response = test.data$Outcome, predictor = predict.class)
-## 
-## Data: predict.class in 101 controls (test.data$Outcome 0) &lt; 52 cases (test.data$Outcome 1).
-## Area under the curve: 0.7194</code></pre>
-<pre class="r"><code>predictions &lt;- subset_train %&gt;% predict(test.data) 
-predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
-rocobj3 &lt;- roc(test.data$Outcome, predict.class)</code></pre>
-<pre><code>## Setting levels: control = 0, case = 1</code></pre>
-<pre><code>## Setting direction: controls &lt; cases</code></pre>
-<pre class="r"><code>rocobj3</code></pre>
-<pre><code>## 
-## Call:
-## roc.default(response = test.data$Outcome, predictor = predict.class)
-## 
-## Data: predict.class in 101 controls (test.data$Outcome 0) &lt; 52 cases (test.data$Outcome 1).
-## Area under the curve: 0.7293</code></pre>
+<div id="root-mean-squared-error-rmse" class="section level3">
+<h3>Root Mean Squared Error (RMSE):</h3>
+<p>As the name suggests it is the square root of the averaged squared
+difference between the actual value and the predicted value of the
+target variable. It gives the average prediction error made by the
+model, thus decreasing the RMSE value increases the accuracy of the
+mode.</p>
 </div>
+<div id="mean-absolute-error-mae" class="section level3">
+<h3>Mean Absolute Error (MAE):</h3>
+<p>This metric gives the absolute difference between the actual values
+and the values predicted by the model for the target variable. If the
+value of the outliers does not have much to do with the accuracy of the
+model, then MAE can be used to evaluate the performance of the model.
+Its value must be less in order to make better models.</p>
+</div>
+<div id="akaike-information-criterion-aic" class="section level3">
+<h3>Akaike Information Criterion (AIC):</h3>
+<p>It assesses how well a model fits the data it generates.The
+calculation of the AIC relies on the number of independent variables
+used to build the model and the maximum likelihood estimate of the
+model. According to AIC, the best-fitting model is the one that explains
+the greatest amount of variation with the fewest independent variables,
+whichFewer variables will also enhance the optimization of the model to
+reduce error. Each redundant predictor added to the model will introduce
+a penalty.</p>
+</div>
+<div id="area-under-the-roc-curve-auc" class="section level3">
+<h3>Area under the ROC Curve (AUC):</h3>
+<p>An ROC curve is a graph showing the performance of a classification
+model at all classification thresholds. AUC measures the entire
+two-dimensional area underneath the entire ROC curve. The higher the AUC
+score, the better the classification of the predicted values is. For
+example, if we consider a model to predict and classify whether the
+outcome is ‘Diabetes’’ or ‘Normal’, a high AUC indicates that the model
+is capable of classifying ‘Diabetes” as ’Diabetes” and ‘Normal’ as
+‘Normal’ more efficiently. There are two reasons why we compare AUC. On
+one hand, AUC is scale-invariant. It measures the ranking of predictions
+rather than their absolute values. On the other hand, AUC measures the
+quality of the model’s predictions irrespective of what classification
+threshold is chosen. Full model and subset model’s AUC is slightly
+higher than the stepwise model but not with significant statistical
+value.</p>
+</div>
+<div id="prediction-accuracy" class="section level3">
+<h3>Prediction accuracy:</h3>
+<p>Prediction accuracy was calculated by predicting the testing data
+using the model fitted from the training data. If the predicted value is
+less than 0.5, we classified it as 0. If the predicted value is larger
+than 0.5, we classified it as 1. Then we computed the ratio of predicted
+value from the test data to the observed value of testing data to see
+how much percentage of the predicted value matched to the observed value
+and recorded it as prediction accuracy.</p>
+<p>From the comparison table, we see that it returns similar values
+among RMSE of 0.42, MAE of 0.35, prediction accuracy of 0.74. Stepwise
+regression’s AIC and AUC is slightly lower than the full model’s and
+subset model’s respectively but the difference is not statistically
+significant.</p>
+<p>Therefore, we select the stepwise regression model with the fewest
+predictors following the principle of parsimony.</p>
+</div>
+<div id="why-use-aic-instead-of-bic" class="section level3">
+<h3>Why use AIC instead of BIC?</h3>
+<p>The reason we use AIC is because Bayesian information criterion (BIC)
+usually results in more parsimonious model than the Akaike information
+criterion.</p>
 </div>
 </div>
 <div id="model-interpretation" class="section level2">
 <h2>Model interpretation</h2>
-<pre class="r"><code>exp(stepmodel$coefficients)</code></pre>
-<pre><code>##              (Intercept)              Pregnancies                  Glucose 
-##                0.4333112                1.0211469                1.0057254 
-##            BloodPressure                      BMI DiabetesPedigreeFunction 
-##                0.9976456                1.0131667                1.1506209 
-##                      Age 
-##                1.0027956</code></pre>
 <pre class="r"><code>variable_name &lt;- c(&quot;Pregnancies&quot;, &quot;Glucose&quot;, &quot;Blood Pressure&quot;, &quot;BMI&quot;, &quot;Diabetes Pedigree Function&quot;,&quot;Age&quot;)
 val &lt;- c(1.021,1.006,0.998,1.013,1.151,1.003)
 p &lt;- c(&quot;&lt; 0.05&quot;,&quot;&lt; 0.05&quot;,&quot;&lt; 0.05&quot;,&quot;&lt; 0.05&quot;,&quot;&lt; 0.05&quot;,0.069)
 variable_data &lt;- data.frame(variable_name,val,p)
-kable(variable_data,caption = &quot;Parameter estimates for the logistic model&quot;, col.names = c(&quot;Parameters&quot;,&quot;Exponentiated Coefficients/Odds Ratio&quot;,&quot;P-values&quot;))%&gt;% kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
+kable(variable_data,caption = &quot;Table 2.Parameter estimates for the logistic model&quot;, col.names = c(&quot;Parameters&quot;,&quot;Exponentiated Coefficients/Odds Ratio&quot;,&quot;P-values&quot;))%&gt;% kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
 <table class="table" style>
 <caption>
-Parameter estimates for the logistic model
+Table 2.Parameter estimates for the logistic model
 </caption>
 <thead>
 <tr>
@@ -834,31 +822,41 @@ Age
 </tr>
 </tbody>
 </table>
-</div>
-<div id="assumptions-check" class="section level2">
-<h2>Assumptions Check</h2>
+<p>The final best model generated is as following: <span
+class="math display">\[Outcome =
+1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)\]</span>
+## Assumptions Check</p>
 <div id="assumption-1-appropriate-outcome-type" class="section level3">
 <h3>Assumption 1— Appropriate Outcome Type</h3>
-<p>By default, logistic regression assumes that the outcome variable is
-binary, where the number of outcomes is two.</p>
+<p>Our goal is to establish a model to predict the occurrence of
+diabetes where the outcome is “Diabetes” or “Normal”. By default,
+logistic regression assumes that the outcome variable is binary, meeting
+our criteria.</p>
 </div>
 <div id="assumption-2-linearity-of-independent-variables-and-log-odds"
 class="section level3">
 <h3>Assumption 2 — Linearity of independent variables and log-odds</h3>
-<pre class="r"><code>p1&lt;-crPlot(stepmodel, &quot;Pregnancies&quot;)</code></pre>
+<pre class="r"><code>crPlots(stepmodel)</code></pre>
 <p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-1.png" width="624" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p2&lt;-crPlot(stepmodel, &quot;Glucose&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-2.png" width="624" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p3&lt;-crPlot(stepmodel, &quot;BloodPressure&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-3.png" width="624" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p4&lt;-crPlot(stepmodel, &quot;BMI&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-4.png" width="624" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p5&lt;-crPlot(stepmodel, &quot;DiabetesPedigreeFunction&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-5.png" width="624" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p6&lt;-crPlot(stepmodel, &quot;Age&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-6.png" width="624" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>grid.arrange(p1, p2, p3, p4,p5,p6, ncol=3)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-7.png" width="624" style="display: block; margin: auto;" /></p>
+<p>We can check logit linearity by visually inspecting the scatter plot
+between each predictor and the logit values.</p>
+<p>Component residual plot is an extension of partial residual plots,
+which is desirable to check whether predictors have a linear
+relationship with dependent variables. A partial residual plot
+essentially attempts to model the residuals of one predictor against the
+dependent variable. A component residual plot adds a line indicating
+where the line of best fit lies. A significant difference between the
+residual line and the component line indicates that the predictor does
+not have a linear relationship with the dependent variable.</p>
+<p>The blue line shows the expected residuals if the relationship
+between the predictor and response variable was linear. The pink line
+shows the actual residuals. If the blue line and pink line basically
+overlaps, we can conclude that there is a linear relationship between
+the outcome and predictor.</p>
+<p>From component residual plots of each variable, we see that all
+predictors except glucose display a prominent linear relationship with
+outcome. Tails of the pink line in the glucose graph deviated a little
+from the blue line but we can still conclude it linearwise.</p>
 </div>
 <div id="assumption-3-no-strongly-influential-outliers"
 class="section level3">
@@ -876,7 +874,7 @@ standardized residual error can be inspected. Data points with an
 absolute standardized residuals above 3 represent possible outliers and
 may deserve closer attention.</p>
 <pre class="r"><code>plot(stepmodel, which = 4, id.n = 3)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-18-1.png" width="528" style="display: block; margin: auto;" /></p>
 </div>
 <div id="assumption-4-absence-of-multicollinearity"
 class="section level3">
@@ -893,19 +891,23 @@ independent variable.</p>
 <p>The smallest possible value for VIF is 1 (i.e., a complete absence of
 collinearity). As a rule of thumb, a VIF value that exceeds 5 or 10
 indicates a problematic amount of multicollinearity.</p>
-<pre class="r"><code>all_vifs &lt;- car::vif(stepmodel)
-print(all_vifs) %&gt;% tidy()%&gt;%
+<pre class="r"><code>all_vifs &lt;- car::vif(stepmodel)</code></pre>
+<pre class="r"><code>print(all_vifs) %&gt;% tidy()%&gt;%
   mutate(Variables = names,
-         VIF = x)%&gt;%
+         VIF = x) %&gt;%
   dplyr::select(Variables,VIF)%&gt;%
-  knitr::kable(digits = 3)</code></pre>
+  knitr::kable(digits = 3,caption = &quot;Table 3.VIF of all variables&quot;)%&gt;%
+  kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
 <pre><code>##              Pregnancies                  Glucose            BloodPressure 
 ##                 1.427047                 1.143559                 1.154015 
 ##                      BMI DiabetesPedigreeFunction                      Age 
 ##                 1.148072                 1.036558                 1.555786</code></pre>
 <pre><code>## Warning: &#39;tidy.numeric&#39; is deprecated.
 ## See help(&quot;Deprecated&quot;)</code></pre>
-<table>
+<table class="table" style>
+<caption>
+Table 3.VIF of all variables
+</caption>
 <thead>
 <tr>
 <th style="text-align:left;">
@@ -986,8 +988,10 @@ randomly scattered around the centerline of zero, we can infer
 ggplot(model.data, aes(index, .std.resid)) + 
   geom_point(aes(color = factor(Outcome)), alpha = .5) +
   theme_bw()+
-  labs(title=&quot;Residual Series Plot&quot;,y=&quot;Deviance Residuals&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+  labs(title=&quot;Residual Series Plot&quot;,y=&quot;Deviance Residuals&quot;,color=&quot;Outcome&quot;)+
+  theme(plot.title = element_text(color = &quot;darkgrey&quot;,size = 13))+
+  scale_color_manual(labels=c(&quot;Normal&quot;,&quot;Diabetes&quot;),values=c(&quot;blue&quot;,&quot;red&quot;))</code></pre>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-21-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
 <div id="assumption-6-sufficiently-large-sample-size"
 class="section level3">

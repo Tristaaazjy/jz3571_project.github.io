@@ -87,8 +87,6 @@ The process works as follow:
 - Apply the model to the test data set to predict the outcome of new unseen observations
 - Quantify the prediction error as the mean squared difference between the observed and the predicted outcome values.
 
-WE split the data set so that 80% is used for training a regression model and 20% is used to evaluate the model performance.
-
 ALL criterions are similar, so we choose the simplest model.(stepmodel)
 
 
@@ -138,44 +136,54 @@ full_val <- c(783.82,0.7135,0.4249,0.3468,0.7451)
 step_val <- c(781.44,0.7107,0.4249,0.3467,0.7451)
 sub_val <- c(781.84,0.7135,0.4239,0.3461,0.7451)
 variable_data <- data.frame(criterion,full_val,step_val,sub_val)
-kable(variable_data,caption = "Model Comparison", col.names = c("Criterion","Full Model","Stepwise model","Subset model"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
+kable(variable_data,caption = "Table 1.Model Comparison", col.names = c("Criterion","Full Model","Stepwise model","Subset model"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
 ```
-Root Mean Squared Error (RMSE): As the name suggests it is the square root of the averaged squared difference between the actual value and the predicted value of the target variable. It gives the average prediction error made by the model, thus decrease the RMSE value to increase the accuracy of the model.
 
-Mean Absolute Error (MAE): This metric gives the absolute difference between the actual values and the values predicted by the model for the target variable. If the value of the outliers does not have much to do with the accuracy of the model, then MAE can be used to evaluate the performance of the model. Its value must be less in order to make better models.
+### Root Mean Squared Error (RMSE): 
+
+As the name suggests it is the square root of the averaged squared difference between the actual value and the predicted value of the target variable. It gives the average prediction error made by the model, thus decreasing the RMSE value increases the accuracy of the mode. 
+
+### Mean Absolute Error (MAE): 
+
+This metric gives the absolute difference between the actual values and the values predicted by the model for the target variable. If the value of the outliers does not have much to do with the accuracy of the model, then MAE can be used to evaluate the performance of the model. Its value must be less in order to make better models.
+
+### Akaike Information Criterion (AIC): 
+
+It assesses how well a model fits the data it generates.The calculation of the AIC relies on the number of independent variables used to build the model and the maximum likelihood estimate of the model. According to AIC, the best-fitting model is the one that explains the greatest amount of variation with the fewest independent variables, whichFewer variables will also enhance the optimization of the model to reduce error. Each redundant predictor added to the model will introduce a penalty. 
 
 
-#### What is ROC and AUC?
+### Area under the ROC Curve (AUC): 
 
-An ROC curve (receiver operating characteristic curve) is a graph showing the performance of a classification model at all classification thresholds. In technical terms, the ROC curve is plotted between the True Positive Rate and the False Positive Rate of a model.
+An ROC curve is a graph showing the performance of  a classification model at all classification thresholds. AUC measures the entire two-dimensional area underneath the entire ROC curve. The higher the AUC score, the better the classification of the predicted values is. For example, if we consider a model to predict and classify whether the outcome is ‘Diabetes'' or ‘Normal’, a high AUC indicates that the model is capable of classifying ‘Diabetes” as ’Diabetes” and ‘Normal’ as ‘Normal’ more efficiently. There are two reasons why we compare AUC.  On one hand, AUC is scale-invariant. It measures the ranking of predictions rather than their absolute values. On the other hand, AUC measures the quality of the model’s predictions irrespective of what classification threshold is chosen. Full model and subset model’s AUC is slightly higher than the stepwise model but not with significant statistical value.
 
-AUC stands for "Area under the ROC Curve." That is, AUC measures the entire two-dimensional area underneath the entire ROC curve.
-Higher the AUC score, better is the classification of the predicted values.
-For example, consider a model to predict and classify whether the outcome is 
-'Diabetes" or ‘Normal’.So, if the AUC score is high, it indicates that the model is capable of classifying 'Diabetes" as 'Diabetes" and ‘Normal’ as ‘Normal’ more efficiently.
+### Prediction accuracy:
 
-#### Why use AUC?
+Prediction accuracy was calculated by predicting the testing data using the model fitted from the training data. If the predicted value is less than 0.5, we classified it as 0. If the predicted value is larger than 0.5, we classified it as 1. Then we computed the ratio of predicted value from the test data  to the observed value of testing data to see how much percentage of the predicted value matched to the observed value and recorded it as prediction accuracy.
 
-AUC is desirable for the following two reasons:
+From the comparison table, we see that it returns similar values among RMSE of 0.42, MAE of 0.35, prediction accuracy of 0.74. Stepwise regression’s AIC and AUC is slightly lower than the full model’s and subset model’s respectively but the difference is not statistically significant.  
 
-AUC is scale-invariant. It measures how well predictions are ranked, rather than their absolute values.
-AUC is classification-threshold-invariant. It measures the quality of the model's predictions irrespective of what classification threshold is chosen.
+Therefore, we select the stepwise regression model with the fewest predictors following the principle of parsimony. 
 
-```{r}
+### Why use AIC instead of BIC?
+
+The reason we use AIC is because Bayesian information criterion (BIC) usually results in more parsimonious model than the Akaike information criterion.
+
+
+```{r, include=FALSE}
 predictions <- full_train %>% predict(test.data) 
 predict.class <- ifelse(predictions < 0.5,0,1)
 rocobj1 <- roc(test.data$Outcome, predict.class)
 rocobj1
 ```
 
-```{r}
+```{r, include=FALSE}
 predictions <- step_train %>% predict(test.data) 
 predict.class <- ifelse(predictions < 0.5,0,1)
 rocobj2 <- roc(test.data$Outcome, predict.class)
 rocobj2
 ```
 
-```{r}
+```{r, include=FALSE}
 predictions <- subset_train %>% predict(test.data) 
 predict.class <- ifelse(predictions < 0.5,0,1)
 rocobj3 <- roc(test.data$Outcome, predict.class)
@@ -185,7 +193,7 @@ rocobj3
 
 ## Model interpretation
 
-```{r}
+```{r, include = FALSE}
 exp(stepmodel$coefficients)
 ```
 
@@ -194,25 +202,30 @@ variable_name <- c("Pregnancies", "Glucose", "Blood Pressure", "BMI", "Diabetes 
 val <- c(1.021,1.006,0.998,1.013,1.151,1.003)
 p <- c("< 0.05","< 0.05","< 0.05","< 0.05","< 0.05",0.069)
 variable_data <- data.frame(variable_name,val,p)
-kable(variable_data,caption = "Parameter estimates for the logistic model", col.names = c("Parameters","Exponentiated Coefficients/Odds Ratio","P-values"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
+kable(variable_data,caption = "Table 2.Parameter estimates for the logistic model", col.names = c("Parameters","Exponentiated Coefficients/Odds Ratio","P-values"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
 ```
 
+The final best model generated is as following:
+$$Outcome =
+1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)$$
 ## Assumptions Check
 
 ### Assumption 1— Appropriate Outcome Type
 
-By default, logistic regression assumes that the outcome variable is binary, where the number of outcomes is two.
+Our goal is to establish a model to predict the occurrence of diabetes where the outcome is “Diabetes” or “Normal”. By default, logistic regression assumes that the outcome variable is binary, meeting our criteria. 
 
 ### Assumption 2 — Linearity of independent variables and log-odds
 ```{r, fig.height=4,fig.width=6.5,fig.align='center'}
-p1<-crPlot(stepmodel, "Pregnancies")
-p2<-crPlot(stepmodel, "Glucose")
-p3<-crPlot(stepmodel, "BloodPressure")
-p4<-crPlot(stepmodel, "BMI")
-p5<-crPlot(stepmodel, "DiabetesPedigreeFunction")
-p6<-crPlot(stepmodel, "Age")
-grid.arrange(p1, p2, p3, p4,p5,p6, ncol=3)
+crPlots(stepmodel)
 ```
+
+We can check logit linearity by visually inspecting the scatter plot between each predictor and the logit values.
+
+Component residual plot is an extension of partial residual plots, which is desirable to check whether predictors have a linear relationship with dependent variables. A partial residual plot essentially attempts to model the residuals of one predictor against the dependent variable. A component residual plot adds a line indicating where the line of best fit lies. A significant difference between the residual line and the component line indicates that the predictor does not have a linear relationship with the dependent variable. 
+
+The blue line shows the expected residuals if the relationship between the predictor and response variable was linear. The pink line shows the actual residuals. If the blue line and pink line basically overlaps, we can conclude that there is a linear relationship between the outcome and predictor. 
+
+From component residual plots of each variable, we see that all predictors except glucose display a prominent linear relationship with outcome. Tails of the pink line in the glucose graph deviated a little from the blue line but we can still conclude it linearwise. 
 
 ### Assumption 3— No strongly influential outliers
 
@@ -222,7 +235,7 @@ The most extreme values in the data can be examined by visualizing the Cook’s 
 
 Note that, not all outliers are influential observations. To check whether the data contains potential influential observations, the standardized residual error can be inspected. Data points with an absolute standardized residuals above 3 represent possible outliers and may deserve closer attention.
 
-```{r}
+```{r,fig.height=4,fig.width=5.5,fig.align='center'}
 plot(stepmodel, which = 4, id.n = 3)
 ```
 
@@ -236,13 +249,17 @@ Mathematically, it is equal to the ratio of the overall model variance to the va
 
 The smallest possible value for VIF is 1 (i.e., a complete absence of collinearity). As a rule of thumb, a VIF value that exceeds 5 or 10 indicates a problematic amount of multicollinearity.
 
-```{r}
+```{r, results = FALSE}
 all_vifs <- car::vif(stepmodel)
+```
+
+```{r}
 print(all_vifs) %>% tidy()%>%
   mutate(Variables = names,
-         VIF = x)%>%
+         VIF = x) %>%
   dplyr::select(Variables,VIF)%>%
-  knitr::kable(digits = 3)
+  knitr::kable(digits = 3,caption = "Table 3.VIF of all variables")%>%
+  kable_styling(latex_option = c("hold_position"), position = "left")
 ```
 
 ### Assumption 5— Independence of observations
@@ -253,13 +270,15 @@ This independence assumption is automatically met for our dataset since the data
 
 We can also check this by creating a Residual Series plot where we plot the deviance residuals of the logit model against the index numbers of the observations.Since the residuals in the plot above appear to be randomly scattered around the centerline of zero, we can infer (visually) that the assumption is satisfied.
 
-```{r}
+```{r,fig.height=4,fig.width=6,fig.align='center'}
 model.data <- augment(stepmodel) %>% 
   mutate(index = 1:n()) 
 ggplot(model.data, aes(index, .std.resid)) + 
   geom_point(aes(color = factor(Outcome)), alpha = .5) +
   theme_bw()+
-  labs(title="Residual Series Plot",y="Deviance Residuals")
+  labs(title="Residual Series Plot",y="Deviance Residuals",color="Outcome")+
+  theme(plot.title = element_text(color = "darkgrey",size = 13))+
+  scale_color_manual(labels=c("Normal","Diabetes"),values=c("blue","red"))
 ```
 
 ### Assumption 6 — Sufficiently large sample size
