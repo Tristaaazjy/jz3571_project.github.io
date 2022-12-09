@@ -337,10 +337,10 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="Data-exploration.html">Exploratory statitics</a>
+  <a href="Data-exploration.html">Exploratory statistics</a>
 </li>
 <li>
-  <a href="StatisticaL-Analysis.html">Descriptive statitics</a>
+  <a href="StatisticaL-Analysis.html">Descriptive statistics</a>
 </li>
 <li>
   <a href="dashboard.html">Mapping</a>
@@ -839,7 +839,50 @@ medians of diagnostic results, which indicate that the factors have
 linear or nonlinear association with diabetes.</p>
 <p>The below Figure 2 shows the violin plots for each factor to see if
 these variables are normally distributed or not.</p>
-<p><img src="Data-exploration_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>h1 &lt;- ggplot(diabetes, aes(x=Pregnancies)) + 
+  geom_histogram( colour=&quot;mediumslateblue&quot;, fill=&quot;white&quot;)+labs(x=&quot;Pregnancies&quot;)
+
+h2 &lt;- ggplot(diabetes, aes(x=Glucose)) + 
+  geom_histogram(colour=&quot;mediumslateblue&quot;, fill=&quot;white&quot;)+labs(x=&quot;Glucose&quot;)+
+  geom_vline(aes(xintercept=70),
+            color=&quot;blue&quot;, linetype=&quot;dashed&quot;, size=0.8)+
+  geom_vline(aes(xintercept=100),
+            color=&quot;blue&quot;, linetype=&quot;dashed&quot;, size=0.8)
+
+h3 &lt;- ggplot(diabetes, aes(x=BloodPressure)) + 
+  geom_histogram(colour=&quot;mediumslateblue&quot;, fill=&quot;white&quot;)+labs(x=&quot;Blood Pressure&quot;)+
+  geom_vline(aes(xintercept=120),
+            color=&quot;blue&quot;, linetype=&quot;dashed&quot;, size=0.8)
+
+h4 &lt;- ggplot(diabetes, aes(x=SkinThickness)) + 
+  geom_histogram(colour=&quot;mediumslateblue&quot;, fill=&quot;white&quot;)+
+  labs(x=&quot;Skin Thickness&quot;)+
+   geom_vline(aes(xintercept=3.4),
+            color=&quot;blue&quot;, linetype=&quot;dashed&quot;, size=0.8)+
+  geom_vline(aes(xintercept=25.2),
+            color=&quot;blue&quot;, linetype=&quot;dashed&quot;, size=0.8)
+
+h5 &lt;- ggplot(diabetes, aes(x=Insulin)) + 
+  geom_histogram(colour=&quot;mediumslateblue&quot;, fill=&quot;white&quot;)+labs(x=&quot;Insulin&quot;)+
+  geom_vline(aes(xintercept=174),
+            color=&quot;blue&quot;, linetype=&quot;dashed&quot;, size=0.8)
+
+h6 &lt;- ggplot(diabetes, aes(x=BMI)) + 
+  geom_histogram(colour=&quot;mediumslateblue&quot;, fill=&quot;white&quot;)+labs(x=&quot;BMI&quot;)+
+   geom_vline(aes(xintercept=18.5),
+            color=&quot;blue&quot;, linetype=&quot;dashed&quot;, size=0.8)+
+  geom_vline(aes(xintercept=30),
+            color=&quot;blue&quot;, linetype=&quot;dashed&quot;, size=0.8)
+
+h7 &lt;- ggplot(diabetes, aes(x=DiabetesPedigreeFunction)) + 
+  geom_histogram(colour=&quot;mediumslateblue&quot;, fill=&quot;white&quot;)+labs(x=&quot;DPF&quot;)
+
+h8 &lt;- ggplot(diabetes, aes(x=Age)) + 
+  geom_histogram(colour=&quot;mediumslateblue&quot;, fill=&quot;white&quot;)+labs(x=&quot;Age&quot;)</code></pre>
+<pre class="r"><code>h &lt;- ggpubr::ggarrange(h1, h2,h3,h4,h5,h6,h7,h8, ncol=4,nrow = 2,common.legend = TRUE)
+
+ggpubr::annotate_figure(h, top = ggpubr::text_grob(&quot;Figure 2: Distributions of Variables&quot;, color = &quot;darkgrey&quot;,face = &quot;bold&quot;, size = 13))</code></pre>
+<p><img src="Data-exploration_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
 <div id="collinearity-test" class="section level2">
 <h2>Collinearity test</h2>

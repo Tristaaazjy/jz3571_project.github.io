@@ -33,7 +33,9 @@ library(broom)
 diabetes <- read.csv("diabetes.csv")
 ```
 
-## Full Model
+## Model Selection
+
+### Full Model
 
 Since the outcome of diabetes was a binary variable in our dataset(1 = disease, 0 = no disease),  we used the Logistic model to obtain the primary model which includes every diagnostic measurement in the model to explore the relationship between these measurements and diabetes. A logistic model models the probability of an event occurring by letting the log odds of the event be a linear combination of one or more independent variables. The analysis uses binary variable regression and models the probability of diabetes occurring with all the variables. Since the full model includes every measurement and does not perform statistical analysis and comparisons with other models to see its predictive ability, therefore it needs to be further analyzed and improved to get prediction optimization.
 
@@ -42,11 +44,10 @@ fullmodel <- glm(Outcome ~. ,data = diabetes)
 summary(fullmodel)
 ```
 
-### Full model test statistics
+#### Full model test statistics
 
 The full model result shows pregnancies, glucose, blood pressure, BMI and diabetes pedigree function are significantly related  to diabetes odds, while skin thickness, insulin and age are not significantly related to diabetes odds. It has an AIC around 783. Due to the nonsignificant variables included in the model and high AIC, we need to adjust our model.
 
-## Model Selection
 
 ### Stepwise regression
 
@@ -205,9 +206,11 @@ variable_data <- data.frame(variable_name,val,p)
 kable(variable_data,caption = "Table 2.Parameter estimates for the logistic model", col.names = c("Parameters","Exponentiated Coefficients/Odds Ratio","P-values"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
 ```
 
+
 The final best model generated is as following:
 $$Outcome =
 1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)$$
+
 ## Assumptions Check
 
 ### Assumption 1— Appropriate Outcome Type
@@ -241,19 +244,18 @@ plot(stepmodel, which = 4, id.n = 3)
 
 ### Assumption 4 — Absence of Multicollinearity
 
-Multicollinearity corresponds to a situation where the data contain highly correlated independent variables. This is a problem because it reduces the precision of the estimated coefficients, which weakens the statistical power of the logistic regression model
+Multicollinearity corresponds to a situation where the data contain highly correlated independent variables. With highly correlated variables, the standard error will be inflated and R-square value will falsely increase. This is a problem because it reduces the precision of the estimated coefficients, which weakens the statistical power of the logistic regression model.
 
-Variance Inflation Factor (VIF) measures the degree of multicollinearity in a set of independent variables.
+Variance Inflation Factor (VIF) measures the degree of multicollinearity in a set of independent variables. Mathematically, it is equal to the ratio of the overall model variance to the variance of a model that includes only that single independent variable.VIF>5 indicates a cause for concern of multicollinearity while VIF > 10 indicates a serious collinearity problem in the model. 
 
-Mathematically, it is equal to the ratio of the overall model variance to the variance of a model that includes only that single independent variable.
+In our model, all predictors have VIF between 1 and 1.6, which is closer to the smallest possible for VIF of 1. Our model is free form collinearity. 
 
-The smallest possible value for VIF is 1 (i.e., a complete absence of collinearity). As a rule of thumb, a VIF value that exceeds 5 or 10 indicates a problematic amount of multicollinearity.
 
 ```{r, results = FALSE}
 all_vifs <- car::vif(stepmodel)
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 print(all_vifs) %>% tidy()%>%
   mutate(Variables = names,
          VIF = x) %>%
@@ -264,11 +266,12 @@ print(all_vifs) %>% tidy()%>%
 
 ### Assumption 5— Independence of observations
 
-The observations must be independent of each other, i.e., they should not come from repeated or paired data. This means that each observation is not influenced by or related to the rest of the observations.
+In logistic regression, it assumes that observations are independent of each other, i.e., they should not come from repeated or paired data. This means that each observation is not influenced by or related to the rest of the observations.
 
 This independence assumption is automatically met for our dataset since the data consists of individual records.
 
-We can also check this by creating a Residual Series plot where we plot the deviance residuals of the logit model against the index numbers of the observations.Since the residuals in the plot above appear to be randomly scattered around the centerline of zero, we can infer (visually) that the assumption is satisfied.
+We can also check this assumption by creating a Residual Series plot which plots the deviance residuals of the logit model against the index numbers of the observations. Since the residuals in the plot above appear to be randomly scattered around the centerline of zero, we can infer visually that the assumption is satisfied.
+
 
 ```{r,fig.height=4,fig.width=6,fig.align='center'}
 model.data <- augment(stepmodel) %>% 
@@ -282,6 +285,7 @@ ggplot(model.data, aes(index, .std.resid)) +
 ```
 
 ### Assumption 6 — Sufficiently large sample size
+
 There should be an adequate number of observations for each independent variable in the dataset to avoid creating an overfit model.
 
-A common way to determine a large sample size is that the total number of observations should be greater than 500.
+A common way to determine a large sample size is that the total number of observations should be greater than 500. Our data set contains 768 observations, which is sufficiently large. 

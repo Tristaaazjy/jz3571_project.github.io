@@ -7,7 +7,27 @@ output:
 
 ---
 
-### Motivation 
+```{r, include = FALSE}
+library(tidyverse)
+library(dplyr)
+library(kableExtra)
+library(ggplot2)
+library(corrplot)
+library(MASS)
+library(bestglm)
+```
+
+```{r, include=FALSE}
+diabetes <- read.csv("diabetes.csv")
+```
+
+```{r, include=FALSE}
+kable(head(dplyr::select(diabetes,Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome),9),caption = "Table 1: Raw Data") %>%
+  kable_styling(latex_option = c("hold_position"), position = "left")
+
+diabetes$Outcome <-factor(diabetes$Outcome)
+```
+## Motivation 
 
 At one time, diabetes was always referred to as a disease of the elderly, yet in fact the incidence of diabetes in young people has increased by nearly 70% in the last decade. With the improvement of living standard, material life grows richer, various snacks and high-sugar beverages appear in the market, resulting in the youth’s distaste for plain water. Moreover, the popularity of computers and the internet has significantly reduced the youths’ outdoor exercises frequencies leading to lack in physical activities. Besides, since the youths usually live a fast-paced life, they often stay up late and suffer from serious long-term mental tension, which increases the secretion of hormones that raises blood glucose in the body, such as glucocorticoids and adrenaline. As a result, the prevalence of diabetes increases dramatically among young people nowadays.   
 
@@ -16,7 +36,7 @@ In addition, epidemiological studies have found that people with diabetes are mo
 Therefore, our project aims to find a model to diagnostically predict whether a female patient has diabetes based on diagnostic measurements included in the dataset with the hope of increasing prodromal care before getting the disease and promoting health keeping behaviors.
 
 
-### Related work 
+## Related work 
 
 After reading the literature “Incidence Trends of Type 1 and Type 2 Diabetes among Youths, 2002-2012”, we realized the importance of diabetes prevention in the new generation which inspired us to analyze the factors that lead to diabetes and further how to predict the diabetes.  
 
@@ -24,14 +44,163 @@ After reading the literature “Incidence Trends of Type 1 and Type 2 Diabetes a
 Kapur, A., & Seshiah, V. (2017). [Women & diabetes: Our right to a healthy future.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5861464/) The Indian journal of medical research, 146(5), 553–556. 
 
 
-### Initial questions 
+## Initial questions 
 
 We are trying to find which factors would help us predict diabetes among all the eight possible variables.
 
-### Data
+## Data
 
-### Exploratory analysis
+We use one dataset drawn from Kaggel which is originally from the National Institute of Diabetes and Digestive and Kidney. Our dataset includes 768 observations for 9 varibles. The objective of this dataset is to predict diabetes diagnostically, based on the medical measurements in the data. This dataset contains eight independent medical predictors which might be associated with diabetes occurrence and one dependent variable `outcome`.  The data source is female patients at least 21 years old of Pima Indian heritage.
 
-### Additional analysis
+## Exploratory analysis
+
+We start with visualizing the distributions of variables among each group, whether the eight diagnostic measurements are related to diabetes or not. Since our outcome variable is a binary variable, the box plot were used to visualize the relationship between factors and diabetes. The y-axis was defined as the diagnostic measurement result  and x-axis were grouped by female with diabetes or not. The results of all box plots are shown in figure 1.
+
+
+```{r, echo = FALSE, fig.align='center'}
+p1 <- ggplot(diabetes,aes(x= Outcome, y=Pregnancies,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p2 <- ggplot(diabetes,aes(x= Outcome, y=Glucose,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p3 <- ggplot(diabetes,aes(x= Outcome, y=BloodPressure,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p4 <- ggplot(diabetes,aes(x= Outcome, y=SkinThickness,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p5 <- ggplot(diabetes,aes(x= Outcome, y=Insulin,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p6 <- ggplot(diabetes,aes(x= Outcome, y=BMI,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p7 <- ggplot(diabetes,aes(x= Outcome, y=DiabetesPedigreeFunction,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+
+p8 <- ggplot(diabetes,aes(x= Outcome, y=Age,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
+  theme_minimal()
+```
+
+```{r, echo = FALSE, fig.align='center'}
+p <- ggpubr::ggarrange(p1, p2,p3,p4,p5,p6,p7,p8, ncol=4,nrow = 2,common.legend = TRUE)
+
+ggpubr::annotate_figure(p, top = ggpubr::text_grob("Figure 1: Distributions of Variables Among Each Group", color = "#0F2540",face = "bold", size = 15))
+
+```
+
+Results reveal that different groups of females have different medians of diagnostic results, which indicate that the factors have linear or nonlinear association with diabetes.
+
+Before fitting the model, the collinearity between different factors needed to be tested. We used the corrplot function to test the collinearity. The plot result shows that there no significant correlation relationship between all eight variables, although the SkinThickness variable and Insulin variable has a light purple color which indicate they might correlated, the index is only about 0.6 which is not significantly correlated and also we do not include the SkinThickness variable in the final model which will be discussed later. Thus, we can conclude that all the eight variables can be used to fit a model and find the prediction rate of diabetes.
+
+```{r, echo = FALSE}
+diabetes$Outcome <-as.numeric(diabetes$Outcome)
+res <- cor(diabetes%>%dplyr::select(Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome))
+```
+
+```{r, echo = FALSE, fig.align='center'}
+col <- colorRampPalette(c("violetred", "white", "mediumpurple2"))(20)
+corrplot(res, type = "upper", order = "hclust", 
+         tl.col = "lavenderblush4", tl.srt = 40,bg = "lavenderblush2",col =col,tl.cex = 0.6)
+```
+
+Since the age and pregnancy factors are most concerned. We use the bar plot to visualize the proportion of diabetes among stratified number of pregnancies and age group.
+
+age~diabetes histogram plot
+The diabetes proportion gets higher with the increase of age variable, and the age group of 50-60 years old has the highest diabetes proportion. Generally, age factors have a positive association with diabetes proportion.
+“Men generally have heart disease in their 40’s and 50’s, about a decade before women. But this is generally not true for diabetic women. For diabetic women, the cardiovascular risk occurs earlier. Diabetes takes away much of the protection premenopausal women would normally get from estrogen.” 
+                                                               —Kapur, A., & Seshiah, V. (2017)
+
+```{r, echo=FALSE,fig.align='center'}
+diabetes <- diabetes %>% 
+  mutate(Agegroup = case_when(Age < 30 ~ "20+", 
+                              30 <= Age & Age < 40 ~ "30+", 
+                              40 <= Age & Age < 50 ~ "40+", 
+                              50 <= Age & Age < 60 ~ "50+", 
+                              60 <= Age ~ "60+"
+                               ))
+
+df <- group_by(diabetes,Agegroup) %>%mutate(percent = sum(Outcome)/n())
+df <- data.frame(
+  Agegroup=c("20+","30+","40+","50+","60+"),
+  Percentage= 100*c(0.212,0.461,0.551,0.596,0.281)
+  )
+ggplot(df, aes(x=Agegroup, y=Percentage)) + 
+  geom_bar(stat = "identity",color="rosybrown", fill="rosybrown" )+
+  geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 4,
+            position = position_dodge(0.9),color ="rosybrown3") + ggtitle("Fig4. Percentage of Diabetes in Different Age Groups")+
+  theme_minimal()+labs(x="Age Group")+
+  theme(plot.title = element_text(color = "darkgrey",size = 12))
+
+```
+
+We also examine the association between pregnancy and diabetes proportion, as it can be seen in the plot below, as the pregnancy frequency increases the diabetes proportion also increases, and when the pregnancy frequency is 17 times,  diabetes proportion reaches a hundred percent.
+
+
+```{r, echo=FALSE,fig.align='center'}
+df <- group_by(diabetes,Pregnancies) %>%mutate(percent = sum(Outcome)/n())
+df <- data.frame(
+  Pregnancies=c(0:15,17),
+  Percentage= 100*c(0.342,0.215,0.184,0.36,0.338,0.368,0.32,0.556,0.579,0.643,0.417,0.636,0.444,0.5,1.0,1.0,1.0)
+  )
+ggplot(df, aes(x=Pregnancies, y=Percentage)) + 
+  geom_bar(stat = "identity",color="rosybrown", fill="rosybrown3")+
+  geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 3,
+            position = position_dodge(0.9),colour = "rosybrown4") + ggtitle("Fig3. Percentage of Diabetes According to Different Pregnancies")+
+  theme_minimal()+
+  theme(plot.title = element_text(color = "darkgrey",size = 12))
+```
+
+## Statistical analysis
+
+### Model Selection
+
+#### Full model
+
+Since the outcome of diabetes was a binary variable in our dataset(1 = disease, 0 = no disease),  we used the Logistic model to obtain the primary model which includes every diagnostic measurement in the model to explore the relationship between these measurements and diabetes. A logistic model models the probability of an event occurring by letting the log odds of the event be a linear combination of one or more independent variables. The analysis uses binary variable regression and models the probability of diabetes occurring with all the variables. Since the full model includes every measurement and does not perform statistical analysis and comparisons with other models to see its predictive ability, therefore it needs to be further analyzed and improved to get prediction optimization.
+
+Full model test stat
+
+The full model result shows `Pregnancies`, `Glucose`,  `BloodPressure`, `BMI`, and `DiabetesPredigreeFunction` are significantly related  to diabetes odds, while `SkinThickness`, `Insulin` and `Age` are not significantly related to diabetes odds. From the odds of each variable, we expect that the diabetes associated with pregnancies, glucose, blood pressure, BMI, Diabetes Pedigree Function and age, since the full model gives the estimates is rather larger for these five variables.  The full model gives an AIC around 783. Due to the nonsignificant variables included in the model and high AIC, we need to adjust our model.
+and the obtained test statistics gives R square equals to 0.265, and Alc is around 740 which indicates a lower model fitting rate, but the test accuracy is around 0.79 suggests a good prediction rate. Due to the contradiction of lower R square value and higher accuracy, other model fitting is needed. Thus, the AIc selection model was used to achieve a higher R square value. 
+
+
+#### Stepwise regression
+
+The first model was fitted using stepwise regression that is a step-by-step iterative construction of a regression model involving the selection of independent variables. It adds or removes potential explanatory variables one by one and test s for statistical significance after each iteration. The stepwise regression generates six predictors of statistical significance including `Pregnancies`, `Glucose`,  `BloodPressure`, `BMI`, and `DiabetesPredigreeFunction`, and `Age`. The final model eliminating`SkinThickness` and `Insulin` has a smaller AIC. 
+
+#### Best subset regression
+
+The second model was fitted using best subset regression that compares all possible models and returns the two best models for one predictor, two predictors, three predictors, and so on for the number of possible predictors that were entered into the best subsets regression. The best model it generated includes seven predictors: ‘`Pregnancies`, `Glucose`,  `BloodPressure`, `BMI`, and `DiabetesPredigreeFunction`, and `Age`, and `Insulin`. 
+
+### Model Comparison
+
+To compare across three models, we use a cross validation approach that splits the data into two sets: one set is used to train the model and the remaining set is used to test the model. We split so that 80% is used for training a regression model and 20% is used to evaluate the model performance. 
+RMSE is the square root of the averaged squared difference between the actual value and the predicted value of the target variable. It gives the average prediction error made by the model, thus decreasing the RMSE value increases the accuracy of the mode. 
+
+* Mean Absolute Error (MAE) gives the absolute difference between the actual values and the values predicted by the model for the target variable. If the value of the outliers does not have much to do with the accuracy of the model, then MAE can be used to evaluate the performance of the model. 
+
+* Akaike Information Criterion (AIC) assesses how well a model fits the data it generates.The calculation of the AIC relies on the number of independent variables used to build the model and the maximum likelihood estimate of the model. According to AIC, the best-fitting model is the one that explains the greatest amount of variation with the fewest independent variables, whichFewer variables will also enhance the optimization of the model to reduce error. Each redundant predictor added to the model will introduce a penalty. 
+
+* AUC stands for “Area under the ROC Curve.” An ROC curve is a graph showing the performance of  a classification model at all classification thresholds. AUC measures the entire two-dimensional area underneath the entire ROC curve. The higher the AUC score, the better the classification of the predicted values is. For example, if we consider a model to predict and classify whether the outcome is ‘Diabetes'' or ‘Normal’, a high AUC indicates that the model is capable of classifying ‘Diabetes” as ’Diabetes” and ‘Normal’ as ‘Normal’ more efficiently. There are two reasons why we compare AUC.  On one hand, AUC is scale-invariant. It measures the ranking of predictions rather than their absolute values. On the other hand, AUC measures the quality of the model’s predictions irrespective of what classification threshold is chosen. Full model and subset model’s AUC is slightly higher than the stepwise model but not with significant statistical value. 
+
+* Prediction accuracy was calculated by predicting the testing data using the model fitted from the training data. If the predicted value is less than 0.5, we classified it as 0. If the predicted value is larger than 0.5, we classified it as 1. Then we computed the ratio of predicted value from the test data  to the observed value of testing data to see how much percentage of the predicted value matched to the observed value and recorded it as prediction accuracy.
+From the comparison table, we see that it returns similar values among RMSE of 0.42, MAE of 0.35, prediction accuracy of 0.74. Stepwise regression’s AIC and AUC is slightly lower than the full model’s and subset model’s respectively but the difference is not statistically significant.  Therefore, we select the stepwise regression model with the fewest predictors following the principle of parsimony. 
+
+
 
 ### Discussion
+
+### Key findings
+
+In the process of detailed data analysis, we identified several variables that were most strongly associated with diabetes: Pregnancies, Glucose, Blood Pressure, BMI, Diabetes Pedigree Function and Age. The key variables were determined through odds ratio as the model building uses logistic methods. The logistic full model ,stepwise regression and best subset models were also obtained to make prediction of whether a patient will have diabetes or not.  
+
+### Model Comparison:
+The stepwise model observed six variables which helps predict diabetes, where the best subset model gives seven variables. The statistical measurement results were shown through the table of model comparison. We split the data set so that 80% is used for training a regression model and 20% is used to evaluate the model performance. The obtained AIc result , AUC result and accuracy were rather same, and all other criteria are similar, thus, the simplest  model–stepwise regression– was chosen as the final prediction model.
+
+### Was the finding as expected?
+In our hypothesis, we expected diabetes to be associated with pregnancies, glucose, blood pressure, BMI, Diabetes Pedigree Function and age.The stepwise model gives the model which  contains 6 variables compared with the five variables model of what we expected, and further increased the accuracy and prediction ability.
+
+### Insight:
+The dataset we analyzed proved that the DiabetesPedigreeFunction variable has the most important effect on diabetes, which means the family factor plays an important role in diabetes. Next index refers to Pregnancies,  the more times women have pregnancy, the higher probability they will have diabetes.  For the other variables, glucose and blood pressure, it will result in the probability of diabetes increasing as the variables increase.. From the above analysis, the best way to avoid diabetes is just to look up the family history, try to avoid unnecessary pregnancy and measure glucose, blood pressure regularly.

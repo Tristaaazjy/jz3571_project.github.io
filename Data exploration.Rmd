@@ -96,37 +96,57 @@ Results reveal that different groups of females have different medians of diagno
 
 The below Figure 2 shows the violin plots for each factor to see if these variables are normally distributed or not.
 
-```{r, echo = FALSE, fig.align='center'}
-v1 <- ggplot(diabetes, aes(x=Outcome, y=Pregnancies,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
+```{r, warning = FALSE, message=FALSE, fig.align='center'}
 
-v2 <- ggplot(diabetes, aes(x=Outcome, y=Glucose,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
+h1 <- ggplot(diabetes, aes(x=Pregnancies)) + 
+  geom_histogram( colour="mediumslateblue", fill="white")+labs(x="Pregnancies")
 
-v3 <- ggplot(diabetes, aes(x=Outcome, y=BloodPressure,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
+h2 <- ggplot(diabetes, aes(x=Glucose)) + 
+  geom_histogram(colour="mediumslateblue", fill="white")+labs(x="Glucose")+
+  geom_vline(aes(xintercept=70),
+            color="blue", linetype="dashed", size=0.8)+
+  geom_vline(aes(xintercept=100),
+            color="blue", linetype="dashed", size=0.8)
 
-v4 <- ggplot(diabetes, aes(x=Outcome, y=SkinThickness,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
+h3 <- ggplot(diabetes, aes(x=BloodPressure)) + 
+  geom_histogram(colour="mediumslateblue", fill="white")+labs(x="Blood Pressure")+
+  geom_vline(aes(xintercept=120),
+            color="blue", linetype="dashed", size=0.8)
 
-v5 <- ggplot(diabetes, aes(x=Outcome, y=Insulin,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
+h4 <- ggplot(diabetes, aes(x=SkinThickness)) + 
+  geom_histogram(colour="mediumslateblue", fill="white")+
+  labs(x="Skin Thickness")+
+   geom_vline(aes(xintercept=3.4),
+            color="blue", linetype="dashed", size=0.8)+
+  geom_vline(aes(xintercept=25.2),
+            color="blue", linetype="dashed", size=0.8)
 
-v6 <- ggplot(diabetes, aes(x=Outcome, y=BMI,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
+h5 <- ggplot(diabetes, aes(x=Insulin)) + 
+  geom_histogram(colour="mediumslateblue", fill="white")+labs(x="Insulin")+
+  geom_vline(aes(xintercept=174),
+            color="blue", linetype="dashed", size=0.8)
 
-v7 <- ggplot(diabetes, aes(x=Outcome, y=DiabetesPedigreeFunction,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
+h6 <- ggplot(diabetes, aes(x=BMI)) + 
+  geom_histogram(colour="mediumslateblue", fill="white")+labs(x="BMI")+
+   geom_vline(aes(xintercept=18.5),
+            color="blue", linetype="dashed", size=0.8)+
+  geom_vline(aes(xintercept=30),
+            color="blue", linetype="dashed", size=0.8)
 
-v8 <- ggplot(diabetes, aes(x=Outcome, y=Age,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
+h7 <- ggplot(diabetes, aes(x=DiabetesPedigreeFunction)) + 
+  geom_histogram(colour="mediumslateblue", fill="white")+labs(x="DPF")
+
+h8 <- ggplot(diabetes, aes(x=Age)) + 
+  geom_histogram(colour="mediumslateblue", fill="white")+labs(x="Age")
 ```
 
-```{r, echo = FALSE, fig.align='center'}
-v <- ggpubr::ggarrange(v1, v2,v3,v4,v5,v6,v7,v8, ncol=4,nrow = 2,common.legend = TRUE)
+```{r, warning = FALSE, message=FALSE}
+h <- ggpubr::ggarrange(h1, h2,h3,h4,h5,h6,h7,h8, ncol=4,nrow = 2,common.legend = TRUE)
 
-ggpubr::annotate_figure(v, top = ggpubr::text_grob("Figure 2: Distributions of Variables Among Each Group", color = "#0F2540",face = "bold", size = 15))
+ggpubr::annotate_figure(h, top = ggpubr::text_grob("Figure 2: Distributions of Variables", color = "darkgrey",face = "bold", size = 13))
 ```
+
+
 
 ```{r, echo = FALSE}
 diabetes$Outcome <-as.numeric(diabetes$Outcome)

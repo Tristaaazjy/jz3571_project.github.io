@@ -3,9 +3,9 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "Exploratory statitics"
+    - text: "Exploratory statistics"
       href: Data-exploration.html
-    - text: "Descriptive statitics"
+    - text: "Descriptive statistics"
       href: StatisticaL-Analysis.html
     - text: "Mapping"
       href: dashboard.html
