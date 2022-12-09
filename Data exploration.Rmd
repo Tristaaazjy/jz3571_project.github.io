@@ -49,28 +49,28 @@ diabetes$Outcome <-factor(diabetes$Outcome)
 We start with identifying whether the eight diagnostic measurements are related with diabetes or not. Since our outcome variable is a binary variable, the box plot were used to visualize the relationship between factors and diabetes. The y-axis was defined as the diagnostic measurement result  and x-axis were grouped by female with diabetes or not. The results of all box plots are shown in Figure 1.  
 
 ```{r, echo = FALSE}
-p1 <- ggplot(diabetes,aes(x= Outcome, y=Pregnancies,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+p1 <- ggplot(diabetes,aes(x= Outcome, y=Pregnancies,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
   theme_minimal()
 
-p2 <- ggplot(diabetes,aes(x= Outcome, y=Glucose,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+p2 <- ggplot(diabetes,aes(x= Outcome, y=Glucose,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
   theme_minimal()
 
-p3 <- ggplot(diabetes,aes(x= Outcome, y=BloodPressure,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+p3 <- ggplot(diabetes,aes(x= Outcome, y=BloodPressure,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
   theme_minimal()
 
-p4 <- ggplot(diabetes,aes(x= Outcome, y=SkinThickness,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+p4 <- ggplot(diabetes,aes(x= Outcome, y=SkinThickness,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
   theme_minimal()
 
-p5 <- ggplot(diabetes,aes(x= Outcome, y=Insulin,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+p5 <- ggplot(diabetes,aes(x= Outcome, y=Insulin,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
   theme_minimal()
 
-p6 <- ggplot(diabetes,aes(x= Outcome, y=BMI,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+p6 <- ggplot(diabetes,aes(x= Outcome, y=BMI,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
   theme_minimal()
 
-p7 <- ggplot(diabetes,aes(x= Outcome, y=DiabetesPedigreeFunction,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+p7 <- ggplot(diabetes,aes(x= Outcome, y=DiabetesPedigreeFunction,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
   theme_minimal()
 
-p8 <- ggplot(diabetes,aes(x= Outcome, y=Age,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme(axis.title.y = element_text(size=8))+
+p8 <- ggplot(diabetes,aes(x= Outcome, y=Age,color=Outcome)) + geom_boxplot()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumpurple"))+theme(axis.title.y = element_text(size=8))+
   theme_minimal()
 ```
 
@@ -86,29 +86,29 @@ Results reveal that different groups of females have different medians of diagno
 The below Figure 2 shows the violin plots for each factor to see if these variables are normally distributed or not.
 
 ```{r, echo = FALSE}
-v1 <- ggplot(diabetes, aes(x=Outcome, y=Pregnancies,fill=Outcome)) + 
-  geom_violin()+labs(x="")+scale_fill_manual(labels = c("Normal", "Diabetes"), values = c("mistyrose", "plum3"))+theme_minimal()
+v1 <- ggplot(diabetes, aes(x=Outcome, y=Pregnancies,color=Outcome)) + 
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
 
 v2 <- ggplot(diabetes, aes(x=Outcome, y=Glucose,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
 
 v3 <- ggplot(diabetes, aes(x=Outcome, y=BloodPressure,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
 
 v4 <- ggplot(diabetes, aes(x=Outcome, y=SkinThickness,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
 
 v5 <- ggplot(diabetes, aes(x=Outcome, y=Insulin,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
 
 v6 <- ggplot(diabetes, aes(x=Outcome, y=BMI,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
 
 v7 <- ggplot(diabetes, aes(x=Outcome, y=DiabetesPedigreeFunction,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
 
 v8 <- ggplot(diabetes, aes(x=Outcome, y=Age,color=Outcome)) + 
-  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "purple"))+theme_minimal()
+  geom_violin()+labs(x="")+scale_color_manual(labels = c("Normal", "Diabetes"), values = c("#DC9FB4", "mediumslateblue"))+theme_minimal()
 ```
 
 ```{r, echo = FALSE}
@@ -130,9 +130,9 @@ Before fitting the model, the collinearity between different factors needed to b
 
 
 ```{r, echo = FALSE}
-col <- colorRampPalette(c("violetred1", "white", "mediumpurple"))(20)
+col <- colorRampPalette(c("violetred", "white", "mediumpurple2"))(20)
 corrplot(res, type = "upper", order = "hclust", 
-         tl.col = "lavenderblush4", tl.srt = 40,bg = "lavenderblush2",col =col,tl.cex = 0.7)
+         tl.col = "lavenderblush4", tl.srt = 40,bg = "lavenderblush2",col =col,tl.cex = 0.6)
 ```
 
 
@@ -162,9 +162,11 @@ df <- data.frame(
   Percentage= 100*c(0.212,0.461,0.551,0.596,0.281)
   )
 ggplot(df, aes(x=Agegroup, y=Percentage)) + 
-  geom_bar(stat = "identity",color="blue", fill=rgb(0.1,0.4,0.5,0.7) )+
-  geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 3,
-            position = position_dodge(0.9),colour = "blue") + ggtitle("Fig3. Percentage of Diabetes in Different Age Groups")+theme_minimal()+labs(x="Age Group")
+  geom_bar(stat = "identity",color="rosybrown", fill="rosybrown" )+
+  geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 4,
+            position = position_dodge(0.9),color ="rosybrown3") + ggtitle("Fig4. Percentage of Diabetes in Different Age Groups")+
+  theme_minimal()+labs(x="Age Group")+
+  theme(plot.title = element_text(color = "darkgrey",size = 12))
 
 ```
 
@@ -180,7 +182,9 @@ df <- data.frame(
   Percentage= 100*c(0.342,0.215,0.184,0.36,0.338,0.368,0.32,0.556,0.579,0.643,0.417,0.636,0.444,0.5,1.0,1.0,1.0)
   )
 ggplot(df, aes(x=Pregnancies, y=Percentage)) + 
-  geom_bar(stat = "identity",color="blue", fill=rgb(0.1,0.4,0.5,0.7) )+
+  geom_bar(stat = "identity",color="rosybrown", fill="rosybrown3")+
   geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 3,
-            position = position_dodge(0.9),colour = "blue") + ggtitle("Fig4. Percentage of Diabetes According to Different Pregnancies")+theme_minimal()
+            position = position_dodge(0.9),colour = "rosybrown4") + ggtitle("Fig3. Percentage of Diabetes According to Different Pregnancies")+
+  theme_minimal()+
+  theme(plot.title = element_text(color = "darkgrey",size = 12))
 ```
