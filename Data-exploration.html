@@ -837,8 +837,9 @@ p8 &lt;- ggplot(diabetes,aes(x= Outcome, y=Age,color=Outcome)) + geom_boxplot()+
 <p>Results reveal that different groups of females have different
 medians of diagnostic results, which indicate that the factors have
 linear or nonlinear association with diabetes.</p>
-<p>The below Figure 2 shows the violin plots for each factor to see if
-these variables are normally distributed or not.</p>
+<p>The below Figure 2 shows the histogram plots for each factor to
+visualize if these variables follow normal distribution and whether
+their measurement value falls in normal range .</p>
 <pre class="r"><code>h1 &lt;- ggplot(diabetes, aes(x=Pregnancies)) + 
   geom_histogram( colour=&quot;mediumslateblue&quot;, fill=&quot;white&quot;)+labs(x=&quot;Pregnancies&quot;)
 
@@ -883,6 +884,21 @@ h8 &lt;- ggplot(diabetes, aes(x=Age)) +
 
 ggpubr::annotate_figure(h, top = ggpubr::text_grob(&quot;Figure 2: Distributions of Variables&quot;, color = &quot;darkgrey&quot;,face = &quot;bold&quot;, size = 13))</code></pre>
 <p><img src="Data-exploration_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>The dash line indicates the normal range for individual females
+without diabetes.</p>
+<ul>
+<li>Glucose: between 4.0 to 5.4 mmol/L(77 to 99 mg/dl) when fasting; Up
+to 7.8mmol/L (140 mg/dl) 2 hours after eating.</li>
+<li>Blood Pressure &lt;120mm Hg</li>
+<li>Skin thickness: 3.40 mm to 25.20 mm in females</li>
+<li>BMI: 18.5-24.9</li>
+</ul>
+<p>We see a large number of the observations have above normal glucose
+level, which is expected because our data contains 268 positive diabetes
+cases and pregnant females whose glucose level is usually higher.
+Because we plan to fit a logistic regression model on the predictors
+that doesn’t require a normal distribution of the variables, we don’t
+need to transform or remedy our data. The skewness can be neglected.</p>
 </div>
 <div id="collinearity-test" class="section level2">
 <h2>Collinearity test</h2>

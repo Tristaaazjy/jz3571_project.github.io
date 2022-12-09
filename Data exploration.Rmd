@@ -94,7 +94,7 @@ ggpubr::annotate_figure(p, top = ggpubr::text_grob("Figure 1: Distributions of V
 
 Results reveal that different groups of females have different medians of diagnostic results, which indicate that the factors have linear or nonlinear association with diabetes. 
 
-The below Figure 2 shows the violin plots for each factor to see if these variables are normally distributed or not.
+The below Figure 2 shows the histogram plots for each factor to visualize if these variables follow normal distribution and whether their measurement value falls in normal range .
 
 ```{r, warning = FALSE, message=FALSE, fig.align='center'}
 
@@ -153,6 +153,14 @@ diabetes$Outcome <-as.numeric(diabetes$Outcome)
 res <- cor(diabetes%>%select(Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome))
 ```
 
+The dash line indicates the normal range for individual females without diabetes. 
+
+* Glucose: between 4.0 to 5.4 mmol/L(77 to 99 mg/dl) when fasting; Up to 7.8mmol/L (140 mg/dl) 2 hours after eating. 
+* Blood Pressure <120mm Hg 
+* Skin thickness: 3.40 mm to 25.20 mm in females
+* BMI: 18.5-24.9 
+
+We see a large number of the observations have above normal glucose level, which is expected because our data contains 268 positive diabetes cases and pregnant females whose glucose level is usually higher. Because we plan to fit a logistic regression model on the predictors that doesn’t require a normal distribution of the variables, we don’t need to transform or remedy our data. The skewness can be neglected. 
 
 ## Collinearity test
 
