@@ -382,34 +382,75 @@ div.tocify {
 </div>
 
 
-<pre class="r"><code>library(dplyr)
-library(MASS)
-library(leaps)
-library(bestglm)
-library(mgcv)
-library(modelr)
-library(purrr)
-library(ggplot2)
-library(tidyverse)
-library(caret)
-library(kableExtra)
-library(pROC)
-library(gridExtra)
-library(car)
-library(broom)</code></pre>
-<pre class="r"><code>diabetes &lt;- read.csv(&quot;diabetes.csv&quot;)</code></pre>
-<div id="full-model" class="section level3">
-<h3>Full Model</h3>
+<div id="full-model" class="section level2">
+<h2>Full Model</h2>
+<p>Since the outcome of diabetes was a binary variable in our dataset(1
+= disease, 0 = no disease), we used the Logistic model to obtain the
+primary model which includes every diagnostic measurement in the model
+to explore the relationship between these measurements and diabetes. A
+logistic model models the probability of an event occurring by letting
+the log odds of the event be a linear combination of one or more
+independent variables. The analysis uses binary variable regression and
+models the probability of diabetes occurring with all the variables.
+Since the full model includes every measurement and does not perform
+statistical analysis and comparisons with other models to see its
+predictive ability, therefore it needs to be further analyzed and
+improved to get prediction optimization.</p>
 <pre class="r"><code>fullmodel &lt;- glm(Outcome ~. ,data = diabetes)
 summary(fullmodel)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Outcome ~ ., data = diabetes)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -1.01348  -0.29513  -0.09541   0.32112   1.24160  
+## 
+## Coefficients:
+##                            Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)              -0.8538943  0.0854850  -9.989  &lt; 2e-16 ***
+## Pregnancies               0.0205919  0.0051300   4.014 6.56e-05 ***
+## Glucose                   0.0059203  0.0005151  11.493  &lt; 2e-16 ***
+## BloodPressure            -0.0023319  0.0008116  -2.873  0.00418 ** 
+## SkinThickness             0.0001545  0.0011122   0.139  0.88954    
+## Insulin                  -0.0001805  0.0001498  -1.205  0.22857    
+## BMI                       0.0132440  0.0020878   6.344 3.85e-10 ***
+## DiabetesPedigreeFunction  0.1472374  0.0450539   3.268  0.00113 ** 
+## Age                       0.0026214  0.0015486   1.693  0.09092 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 0.1601684)
+## 
+##     Null deviance: 174.48  on 767  degrees of freedom
+## Residual deviance: 121.57  on 759  degrees of freedom
+## AIC: 783.82
+## 
+## Number of Fisher Scoring iterations: 2</code></pre>
+<div id="full-model-test-statistics" class="section level3">
+<h3>Full model test statistics</h3>
+<p>The full model result shows pregnancies, glucose, blood pressure, BMI
+and diabetes pedigree function are significantly related to diabetes
+odds, while skin thickness, insulin and age are not significantly
+related to diabetes odds. It has an AIC around 783. Due to the
+nonsignificant variables included in the model and high AIC, we need to
+adjust our model.</p>
+</div>
 </div>
 <div id="model-selection" class="section level2">
 <h2>Model Selection</h2>
 <div id="stepwise-regression" class="section level3">
 <h3>Stepwise regression</h3>
-<p>The reason we use AIC is because Bayesian information criterion (BIC)
-usually results in more parsimonious model than the Akaike information
-criterion.</p>
+<p>The first model was fitted using stepwise regression that is a
+step-by-step iterative construction of a regression model involving the
+selection of independent variables. It adds or removes potential
+explanatory variables one by one and test s for statistical significance
+after each iteration. The stepwise regression generates six predictors
+of statistical significance including <code>Pregnancies</code>,
+<code>Glucose</code>, <code>BloodPressure</code>, <code>BMI</code>, and
+<code>DiabetesPredigreeFunction</code>, and <code>Age</code>. The final
+model eliminating<code>SkinThickness</code> and <code>Insulin</code> has
+a smaller AIC.</p>
 <pre class="r"><code>stepmodel &lt;- stepAIC(fullmodel,trace = F)
 stepmodel$anova</code></pre>
 <pre><code>## Stepwise Model Path 
@@ -463,22 +504,11 @@ stepmodel$anova</code></pre>
 <p>While stepwise regression select variables sequentially, the best
 subsets approach aims to find out the best fit model from all possible
 subset models. Best subset regression selects the best model from all
-possible subsets according to some goodness-of-fit criteria.</p>
-<pre class="r"><code>subsetmodel &lt;- bestglm(diabetes,IC=&quot;AIC&quot;,family = binomial)</code></pre>
-<pre><code>## Morgan-Tatar search since family is non-gaussian.</code></pre>
-<pre class="r"><code>subsetmodel</code></pre>
-<pre><code>## AIC
-## BICq equivalent for q in (0.910337349179387, 0.965036759857444)
-## Best Model:
-##                              Estimate   Std. Error    z value     Pr(&gt;|z|)
-## (Intercept)              -8.405136208 0.7167032628 -11.727498 9.214195e-32
-## Pregnancies               0.123172450 0.0320687734   3.840884 1.225919e-04
-## Glucose                   0.035112252 0.0036624713   9.587038 9.064975e-22
-## BloodPressure            -0.013213574 0.0051536754  -2.563913 1.034996e-02
-## Insulin                  -0.001157035 0.0008141589  -1.421142 1.552755e-01
-## BMI                       0.090088589 0.0144619078   6.229371 4.683116e-10
-## DiabetesPedigreeFunction  0.947595358 0.2980062755   3.179783 1.473853e-03
-## Age                       0.014788838 0.0092896771   1.591965 1.113926e-01</code></pre>
+possible subsets according to some goodness-of-fit criteria. The best
+model it generated includes seven predictors: ’<code>Pregnancies</code>,
+<code>Glucose</code>, <code>BloodPressure</code>, <code>BMI</code>, and
+<code>DiabetesPredigreeFunction</code>, and <code>Age</code>, and
+<code>Insulin</code>.</p>
 <pre class="r"><code>subsetmodel&lt;-glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=diabetes)
 summary(subsetmodel)</code></pre>
 <pre><code>## 
@@ -514,12 +544,13 @@ summary(subsetmodel)</code></pre>
 </div>
 <div id="compare-models" class="section level2">
 <h2>Compare models</h2>
-</div>
-<div id="cross-validation" class="section level2">
-<h2>Cross validation</h2>
-<p>The validation set approach consists of randomly splitting the data
-into two sets: one set is used to train the model and the remaining
-other set sis used to test the model.</p>
+<div id="cross-validation" class="section level3">
+<h3>Cross validation</h3>
+<p>To compare across three models, we use a cross validation approach
+that splits the data into two sets: one set is used to train the model
+and the remaining set is used to test the model. We split so that 80% is
+used for training a regression model and 20% is used to evaluate the
+model performance.</p>
 <p>The process works as follow:</p>
 <ul>
 <li>Build (train) the model on the training data set</li>
@@ -532,42 +563,6 @@ the observed and the predicted outcome values.</li>
 model and 20% is used to evaluate the model performance.</p>
 <p>ALL criterions are similar, so we choose the simplest
 model.(stepmodel)</p>
-<pre class="r"><code>set.seed(123)
-training.samples &lt;- diabetes$Outcome %&gt;%
-  createDataPartition(p = 0.8, list = FALSE)
-train.data  &lt;- diabetes[training.samples, ]
-test.data &lt;- diabetes[-training.samples, ]</code></pre>
-<pre class="r"><code>full_train &lt;- glm(Outcome ~. ,data = train.data)
-predictions &lt;- full_train %&gt;% predict(test.data) 
-predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
-data.frame( R2 = R2(predictions, test.data$Outcome),
-            RMSE = RMSE(predictions, test.data$Outcome),
-            MAE = MAE(predictions, test.data$Outcome))</code></pre>
-<pre><code>##          R2      RMSE      MAE
-## 1 0.2992287 0.3969386 0.336013</code></pre>
-<pre class="r"><code>mean(predict.class==test.data$Outcome)</code></pre>
-<pre><code>## [1] 0.7843137</code></pre>
-<pre class="r"><code>step_train &lt;- glm(Outcome ~ Pregnancies + Glucose + BloodPressure + 
-    BMI + DiabetesPedigreeFunction + Age, data = train.data)
-predictions &lt;- step_train %&gt;% predict(test.data) 
-predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
-data.frame( R2 = R2(predictions, test.data$Outcome),
-            RMSE = RMSE(predictions, test.data$Outcome),
-            MAE = MAE(predictions, test.data$Outcome))</code></pre>
-<pre><code>##          R2      RMSE       MAE
-## 1 0.2960177 0.3978375 0.3374428</code></pre>
-<pre class="r"><code>mean(predict.class==test.data$Outcome)</code></pre>
-<pre><code>## [1] 0.7712418</code></pre>
-<pre class="r"><code>subset_train &lt;- glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=train.data)
-predictions &lt;- subset_train %&gt;% predict(test.data) 
-predict.class &lt;- ifelse(predictions &lt; 0.5,0,1)
-data.frame( R2 = R2(predictions, test.data$Outcome),
-            RMSE = RMSE(predictions, test.data$Outcome),
-            MAE = MAE(predictions, test.data$Outcome))</code></pre>
-<pre><code>##          R2      RMSE       MAE
-## 1 0.2993958 0.3968811 0.3360024</code></pre>
-<pre class="r"><code>mean(predict.class==test.data$Outcome)</code></pre>
-<pre><code>## [1] 0.7843137</code></pre>
 <pre class="r"><code>criterion &lt;- c(&quot;AIC&quot;, &quot;AUC&quot;, &quot;RMSE&quot;, &quot;MAE&quot;,&quot;Prediction Accuracy&quot;)
 full_val &lt;- c(783.82,0.7135,0.4249,0.3468,0.7451)
 step_val &lt;- c(781.44,0.7107,0.4249,0.3467,0.7451)
@@ -738,6 +733,7 @@ rocobj3 &lt;- roc(test.data$Outcome, predict.class)</code></pre>
 ## Area under the curve: 0.7293</code></pre>
 </div>
 </div>
+</div>
 <div id="model-interpretation" class="section level2">
 <h2>Model interpretation</h2>
 <pre class="r"><code>exp(stepmodel$coefficients)</code></pre>
@@ -850,19 +846,19 @@ binary, where the number of outcomes is two.</p>
 class="section level3">
 <h3>Assumption 2 — Linearity of independent variables and log-odds</h3>
 <pre class="r"><code>p1&lt;-crPlot(stepmodel, &quot;Pregnancies&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-1.png" width="624" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>p2&lt;-crPlot(stepmodel, &quot;Glucose&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-2.png" width="624" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>p3&lt;-crPlot(stepmodel, &quot;BloodPressure&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-3.png" width="672" /></p>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-3.png" width="624" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>p4&lt;-crPlot(stepmodel, &quot;BMI&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-4.png" width="672" /></p>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-4.png" width="624" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>p5&lt;-crPlot(stepmodel, &quot;DiabetesPedigreeFunction&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-5.png" width="672" /></p>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-5.png" width="624" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>p6&lt;-crPlot(stepmodel, &quot;Age&quot;)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-6.png" width="672" /></p>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-6.png" width="624" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>grid.arrange(p1, p2, p3, p4,p5,p6, ncol=3)</code></pre>
-<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-7.png" width="672" /></p>
+<p><img src="StatisticaL-Analysis_files/figure-html/unnamed-chunk-17-7.png" width="624" style="display: block; margin: auto;" /></p>
 </div>
 <div id="assumption-3-no-strongly-influential-outliers"
 class="section level3">

@@ -11,7 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r,message=FALSE}
+```{r,include=FALSE}
 library(dplyr)
 library(MASS)
 library(leaps)
@@ -29,21 +29,29 @@ library(car)
 library(broom)
 ```
 
-```{r, message=FALSE}
+```{r, include=FALSE}
 diabetes <- read.csv("diabetes.csv")
 ```
 
-### Full Model
-```{r, results = FALSE}
+## Full Model
+
+Since the outcome of diabetes was a binary variable in our dataset(1 = disease, 0 = no disease),  we used the Logistic model to obtain the primary model which includes every diagnostic measurement in the model to explore the relationship between these measurements and diabetes. A logistic model models the probability of an event occurring by letting the log odds of the event be a linear combination of one or more independent variables. The analysis uses binary variable regression and models the probability of diabetes occurring with all the variables. Since the full model includes every measurement and does not perform statistical analysis and comparisons with other models to see its predictive ability, therefore it needs to be further analyzed and improved to get prediction optimization.
+
+```{r}
 fullmodel <- glm(Outcome ~. ,data = diabetes)
 summary(fullmodel)
 ```
+
+### Full model test statistics
+
+The full model result shows pregnancies, glucose, blood pressure, BMI and diabetes pedigree function are significantly related  to diabetes odds, while skin thickness, insulin and age are not significantly related to diabetes odds. It has an AIC around 783. Due to the nonsignificant variables included in the model and high AIC, we need to adjust our model.
 
 ## Model Selection
 
 ### Stepwise regression
 
-The reason we use AIC is because Bayesian information criterion (BIC) usually results in more parsimonious model than the Akaike information criterion.
+The first model was fitted using stepwise regression that is a step-by-step iterative construction of a regression model involving the selection of independent variables. It adds or removes potential explanatory variables one by one and test s for statistical significance after each iteration. The stepwise regression generates six predictors of statistical significance including `Pregnancies`, `Glucose`,  `BloodPressure`, `BMI`, and `DiabetesPredigreeFunction`, and `Age`. The final model eliminating`SkinThickness` and `Insulin` has a smaller AIC. 
+
 
 ```{r}
 stepmodel <- stepAIC(fullmodel,trace = F)
@@ -53,22 +61,25 @@ summary(stepmodel)
 
 ###  Best subset regression
 
-While stepwise regression select variables sequentially, the best subsets approach aims to find out the best fit model from all possible subset models.
-Best subset regression selects the best model from all possible subsets according to some goodness-of-fit criteria.
-```{r}
+While stepwise regression select variables sequentially, the best subsets approach aims to find out the best fit model from all possible subset models. Best subset regression selects the best model from all possible subsets according to some goodness-of-fit criteria. The best model it generated includes seven predictors: ‘`Pregnancies`, `Glucose`,  `BloodPressure`, `BMI`, and `DiabetesPredigreeFunction`, and `Age`, and `Insulin`. 
+
+
+```{r, include=FALSE}
 subsetmodel <- bestglm(diabetes,IC="AIC",family = binomial)
 subsetmodel
 ```
+
 ```{r}
 subsetmodel<-glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=diabetes)
 summary(subsetmodel)
 ```
+
 ## Compare models
 
 
-## Cross validation
+### Cross validation
 
-The validation set approach consists of randomly splitting the data into two sets: one set is used to train the model and the remaining other set sis used to test the model.
+To compare across three models, we use a cross validation approach that splits the data into two sets: one set is used to train the model and the remaining set is used to test the model. We split so that 80% is used for training a regression model and 20% is used to evaluate the model performance.
 
 The process works as follow:
 
@@ -81,7 +92,7 @@ WE split the data set so that 80% is used for training a regression model and 20
 ALL criterions are similar, so we choose the simplest model.(stepmodel)
 
 
-```{r}
+```{r, include=FALSE}
 set.seed(123)
 training.samples <- diabetes$Outcome %>%
   createDataPartition(p = 0.8, list = FALSE)
@@ -89,7 +100,7 @@ train.data  <- diabetes[training.samples, ]
 test.data <- diabetes[-training.samples, ]
 ```
 
-```{r}
+```{r, include=FALSE}
 full_train <- glm(Outcome ~. ,data = train.data)
 predictions <- full_train %>% predict(test.data) 
 predict.class <- ifelse(predictions < 0.5,0,1)
@@ -99,7 +110,7 @@ data.frame( R2 = R2(predictions, test.data$Outcome),
 mean(predict.class==test.data$Outcome)
 ```
 
-```{r}
+```{r, include=FALSE}
 step_train <- glm(Outcome ~ Pregnancies + Glucose + BloodPressure + 
     BMI + DiabetesPedigreeFunction + Age, data = train.data)
 predictions <- step_train %>% predict(test.data) 
@@ -110,7 +121,7 @@ data.frame( R2 = R2(predictions, test.data$Outcome),
 mean(predict.class==test.data$Outcome)
 ```
 
-```{r}
+```{r, include=FALSE}
 subset_train <- glm(Outcome ~ Pregnancies + Glucose + BloodPressure + BMI + DiabetesPedigreeFunction + Age+Insulin,data=train.data)
 predictions <- subset_train %>% predict(test.data) 
 predict.class <- ifelse(predictions < 0.5,0,1)
@@ -193,7 +204,7 @@ kable(variable_data,caption = "Parameter estimates for the logistic model", col.
 By default, logistic regression assumes that the outcome variable is binary, where the number of outcomes is two.
 
 ### Assumption 2 — Linearity of independent variables and log-odds
-```{r}
+```{r, fig.height=4,fig.width=6.5,fig.align='center'}
 p1<-crPlot(stepmodel, "Pregnancies")
 p2<-crPlot(stepmodel, "Glucose")
 p3<-crPlot(stepmodel, "BloodPressure")
