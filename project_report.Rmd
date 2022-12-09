@@ -190,7 +190,7 @@ From the comparison table, we see that it returns similar values among RMSE of 0
 
 
 
-### Discussion
+## Discussion
 
 ### Key findings
 
