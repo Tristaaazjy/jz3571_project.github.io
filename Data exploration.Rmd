@@ -184,4 +184,3 @@ ggplot(df, aes(x=Pregnancies, y=Percentage)) +
   geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 3,
             position = position_dodge(0.9),colour = "blue") + ggtitle("Fig4. Percentage of Diabetes According to Different Pregnancies")+theme_minimal()
 ```
-
