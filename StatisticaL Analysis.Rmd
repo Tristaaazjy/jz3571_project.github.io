@@ -1,9 +1,10 @@
 ---
 title: "Statistical Analysis"
-date: "2022-12-02"
 output:
    html_document : 
       code_folding: hide
+      toc: true
+      toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -28,12 +29,12 @@ library(car)
 library(broom)
 ```
 
-```{r}
+```{r, message=FALSE}
 diabetes <- read.csv("diabetes.csv")
 ```
 
 ### Full Model
-```{r}
+```{r, results = FALSE}
 fullmodel <- glm(Outcome ~. ,data = diabetes)
 summary(fullmodel)
 ```

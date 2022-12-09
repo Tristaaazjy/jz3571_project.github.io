@@ -18,7 +18,9 @@ library(kableExtra)
 library(ggplot2)
 library(corrplot)
 ```
-### Data Preview
+
+## Data Preview
+
 ```{r, echo = FALSE}
 diabetes <- read.csv("diabetes.csv")
 ```
@@ -44,7 +46,8 @@ kable(variable_data,caption = "Table 2: Data Dictionary",col.names = c("Variable
 ```{r,echo = FALSE}
 diabetes$Outcome <-factor(diabetes$Outcome)
 ```
-### Factors Preview
+
+## Factors Preview
 
 We start with identifying whether the eight diagnostic measurements are related with diabetes or not. Since our outcome variable is a binary variable, the box plot were used to visualize the relationship between factors and diabetes. The y-axis was defined as the diagnostic measurement result  and x-axis were grouped by female with diabetes or not. The results of all box plots are shown in Figure 1.  
 
@@ -123,7 +126,7 @@ res <- cor(diabetes%>%select(Pregnancies,Glucose,BloodPressure,SkinThickness,Ins
 ```
 
 
-### Collinearity test
+## Collinearity test
 
 
 Before fitting the model, the collinearity between different factors needed to be tested. We used the corrplot function to test the collinearity. The plot result shows that there no significant correlation relationship between all eight variables, although the SkinThickness variable and Insulin variable has a light purple color which indicate they might correlated, the index is only about 0.6 which is not significantly correlated and also we do not include the SkinThickness variable in the final model which will be discussed later. Thus, we can conclude that all the eight variables can be used to fit a model and find the prediction rate of diabetes.
@@ -137,11 +140,11 @@ corrplot(res, type = "upper", order = "hclust",
 
 
 
-### Two specific factors exploration
+## Two specific factors exploration
 
 Since the age and pregnancy factors are most concerned. We use the bar plot to visualize the proportion of diabetes among stratified age groups and different numbers of pregnancies.
 
-####  Age
+### Age
 
 “Men generally have heart disease in their 40’s and 50’s, about a decade before women. But this is generally not true for diabetic women. For diabetic women, the cardiovascular risk occurs earlier. Diabetes takes away much of the protection premenopausal women would normally get from estrogen.”                                                            —Kapur, A., & Seshiah, V. (2017)   
 
@@ -170,7 +173,7 @@ ggplot(df, aes(x=Agegroup, y=Percentage)) +
 
 ```
 
-####  Pregnancy
+### Pregnancy
 
 We also examine the association between pregnancy and diabetes proportion, as it can be seen in the plot below, as the pregnancy frequency increases the diabetes proportion also increases, and when the pregnancy frequency is 17 times,  diabetes proportion reaches a hundred percent.
 

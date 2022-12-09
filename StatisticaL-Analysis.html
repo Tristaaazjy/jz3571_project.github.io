@@ -10,7 +10,6 @@
 
 
 
-<meta name="date" content="2022-12-02" />
 
 <title>Statistical Analysis</title>
 
@@ -30,6 +29,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
@@ -235,6 +237,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -242,6 +307,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -303,7 +378,6 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Statistical Analysis</h1>
-<h4 class="date">2022-12-02</h4>
 
 </div>
 
@@ -328,35 +402,6 @@ library(broom)</code></pre>
 <h3>Full Model</h3>
 <pre class="r"><code>fullmodel &lt;- glm(Outcome ~. ,data = diabetes)
 summary(fullmodel)</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = Outcome ~ ., data = diabetes)
-## 
-## Deviance Residuals: 
-##      Min        1Q    Median        3Q       Max  
-## -1.01348  -0.29513  -0.09541   0.32112   1.24160  
-## 
-## Coefficients:
-##                            Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)              -0.8538943  0.0854850  -9.989  &lt; 2e-16 ***
-## Pregnancies               0.0205919  0.0051300   4.014 6.56e-05 ***
-## Glucose                   0.0059203  0.0005151  11.493  &lt; 2e-16 ***
-## BloodPressure            -0.0023319  0.0008116  -2.873  0.00418 ** 
-## SkinThickness             0.0001545  0.0011122   0.139  0.88954    
-## Insulin                  -0.0001805  0.0001498  -1.205  0.22857    
-## BMI                       0.0132440  0.0020878   6.344 3.85e-10 ***
-## DiabetesPedigreeFunction  0.1472374  0.0450539   3.268  0.00113 ** 
-## Age                       0.0026214  0.0015486   1.693  0.09092 .  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for gaussian family taken to be 0.1601684)
-## 
-##     Null deviance: 174.48  on 767  degrees of freedom
-## Residual deviance: 121.57  on 759  degrees of freedom
-## AIC: 783.82
-## 
-## Number of Fisher Scoring iterations: 2</code></pre>
 </div>
 <div id="model-selection" class="section level2">
 <h2>Model Selection</h2>
@@ -961,6 +1006,8 @@ number of observations should be greater than 500.</p>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -998,6 +1045,35 @@ $(document).ready(function () {
 });
 </script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
