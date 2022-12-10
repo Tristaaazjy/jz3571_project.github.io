@@ -384,8 +384,6 @@ div.tocify {
 
 <div id="model-selection" class="section level2">
 <h2>Model Selection</h2>
-<div id="full-model" class="section level3">
-<h3>Full Model</h3>
 <p>Since the outcome of diabetes was a binary variable in our dataset(1
 = disease, 0 = no disease), we used the Logistic model to obtain the
 primary model which includes every diagnostic measurement in the model
@@ -398,6 +396,8 @@ Since the full model includes every measurement and does not perform
 statistical analysis and comparisons with other models to see its
 predictive ability, therefore it needs to be further analyzed and
 improved to get prediction optimization.</p>
+<div id="full-model" class="section level3">
+<h3>Full model</h3>
 <pre class="r"><code>fullmodel &lt;- glm(Outcome ~. ,data = diabetes)
 summary(fullmodel)</code></pre>
 <pre><code>## 
@@ -429,19 +429,17 @@ summary(fullmodel)</code></pre>
 ## AIC: 783.82
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
-<div id="full-model-test-statistics" class="section level4">
-<h4>Full model test statistics</h4>
-<p>The full model result shows pregnancies, glucose, blood pressure, BMI
-and diabetes pedigree function are significantly related to diabetes
-odds, while skin thickness, insulin and age are not significantly
-related to diabetes odds. It has an AIC around 783. Due to the
-nonsignificant variables included in the model and high AIC, we need to
-adjust our model.</p>
-</div>
+<p>The full model result shows <code>Pregnancies</code>,
+<code>Glucose</code>, <code>BloodPressure</code>, <code>BMI</code>, and
+<code>DiabetesPredigreeFunction</code> are significantly related to
+diabetes odds, while <code>SkinThickness</code>, <code>Insulin</code>
+and <code>Age</code> are not significantly related to diabetes odds. It
+has an AIC around 783. Due to the non-significant variables included in
+the model and high AIC, we need to adjust our model.</p>
 </div>
 <div id="stepwise-regression" class="section level3">
 <h3>Stepwise regression</h3>
-<p>The first model was fitted using stepwise regression that is a
+<p>The other model was fitted using stepwise regression that is a
 step-by-step iterative construction of a regression model involving the
 selection of independent variables. It adds or removes potential
 explanatory variables one by one and test s for statistical significance
@@ -559,8 +557,7 @@ unseen observations</li>
 <li>Quantify the prediction error as the mean squared difference between
 the observed and the predicted outcome values.</li>
 </ul>
-<p>ALL criterions are similar, so we choose the simplest
-model.(stepmodel)</p>
+<p>The results are shown in following table.</p>
 <pre class="r"><code>criterion &lt;- c(&quot;AIC&quot;, &quot;AUC&quot;, &quot;RMSE&quot;, &quot;MAE&quot;,&quot;Prediction Accuracy&quot;)
 full_val &lt;- c(783.82,0.7135,0.4249,0.3468,0.7451)
 step_val &lt;- c(781.44,0.7107,0.4249,0.3467,0.7451)
@@ -662,7 +659,7 @@ Prediction Accuracy
 </table>
 </div>
 <div id="root-mean-squared-error-rmse" class="section level3">
-<h3>Root Mean Squared Error (RMSE):</h3>
+<h3>Root Mean Squared Error (RMSE)</h3>
 <p>As the name suggests it is the square root of the averaged squared
 difference between the actual value and the predicted value of the
 target variable. It gives the average prediction error made by the
@@ -670,7 +667,7 @@ model, thus decreasing the RMSE value increases the accuracy of the
 mode.</p>
 </div>
 <div id="mean-absolute-error-mae" class="section level3">
-<h3>Mean Absolute Error (MAE):</h3>
+<h3>Mean Absolute Error (MAE)</h3>
 <p>This metric gives the absolute difference between the actual values
 and the values predicted by the model for the target variable. If the
 value of the outliers does not have much to do with the accuracy of the
@@ -678,7 +675,7 @@ model, then MAE can be used to evaluate the performance of the model.
 Its value must be less in order to make better models.</p>
 </div>
 <div id="akaike-information-criterion-aic" class="section level3">
-<h3>Akaike Information Criterion (AIC):</h3>
+<h3>Akaike Information Criterion (AIC)</h3>
 <p>It assesses how well a model fits the data it generates.The
 calculation of the AIC relies on the number of independent variables
 used to build the model and the maximum likelihood estimate of the
@@ -689,7 +686,7 @@ reduce error. Each redundant predictor added to the model will introduce
 a penalty.</p>
 </div>
 <div id="area-under-the-roc-curve-auc" class="section level3">
-<h3>Area under the ROC Curve (AUC):</h3>
+<h3>Area under the ROC Curve (AUC)</h3>
 <p>An ROC curve is a graph showing the performance of a classification
 model at all classification thresholds. AUC measures the entire
 two-dimensional area underneath the entire ROC curve. The higher the AUC
@@ -706,7 +703,7 @@ higher than the stepwise model but not with significant statistical
 value.</p>
 </div>
 <div id="prediction-accuracy" class="section level3">
-<h3>Prediction accuracy:</h3>
+<h3>Prediction accuracy</h3>
 <p>Prediction accuracy was calculated by predicting the testing data
 using the model fitted from the training data. If the predicted value is
 less than 0.5, we classified it as 0. If the predicted value is larger
@@ -714,6 +711,9 @@ than 0.5, we classified it as 1. Then we computed the ratio of predicted
 value from the test data to the observed value of testing data to see
 how much percentage of the predicted value matched to the observed value
 and recorded it as prediction accuracy.</p>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
 <p>From the comparison table, we see that it returns similar values
 among RMSE of 0.42, MAE of 0.35, prediction accuracy of 0.74. Stepwise
 regression’s AIC and AUC is slightly lower than the full model’s and
@@ -823,11 +823,50 @@ Age
 </tbody>
 </table>
 <p>The final best model generated is as following: <span
-class="math display">\[Outcome =
-1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)\]</span></p>
+class="math inline">\((pi/1-pi) =
+1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)\)</span></p>
+<p>pi is the probability for diabetes</p>
+<ul>
+<li><p>On average, for one more pregnancy, the estimated increase in
+diabetes odds is 1.021, holding other variables constant.</p></li>
+<li><p>For one unit increase in glucose, the estimated increase in
+diabetes odds on average is 1.006, holding other variables
+constant.</p></li>
+<li><p>For one mmHg increase in blood pressure, the estimated increase
+in diabetes odds on average is 0.998, holding other variables
+constant.</p></li>
+<li><p>For one unit increase in BMI, the estimated increase in diabetes
+odds on average is 1.013, holding other variables constant.</p></li>
+<li><p>For one unit increase in diabetes pedigree function, the
+estimated increase in diabetes odds on average is 1.151, , holding other
+variables constant.</p></li>
+<li><p>For one year increase in age, the estimated increase in diabetes
+odds on average is around 1.003, holding other variables
+constant.</p></li>
+</ul>
+<p>The six predictor estimators were listed in the table, and four of
+them have a positive association with diabetes. However, we discovered
+that the blood pressure and Glucose variables have the estimated odds
+around one, which implies no relationship with diabetes. What we expect
+is that the Glucose and blood pressure variable will help us predict the
+disease of diabetes. One possible explanation is that units of Glucose
+and blood pressure variables are very small. A diminutive unit increase
+of these two variables results in only a slight change in the outcome of
+p/1-pi. Therefore, the coefficient will be close to 1 as the overall
+change is little. The small increase is caused by the absolute change in
+the values instead of the small influence of glucose and blood pressure
+on diabetes.</p>
+<p>Glucose and blood pressure will be at their normal range if people do
+not have disease, and the odds result of these two only represent the
+rate of outcome as unit change as we considered the unit of the glucose
+and blood pressure is small. Also, the measure method and difference in
+measurement time will affect the glucose and blood pressure result. That
+might be the reason why the odds of glucose and blood pressure are
+around one.</p>
 </div>
 <div id="assumptions-check" class="section level2">
 <h2>Assumptions Check</h2>
+<p>We performed assumptions checks on our model.</p>
 <div id="assumption-1-appropriate-outcome-type" class="section level3">
 <h3>Assumption 1— Appropriate Outcome Type</h3>
 <p>Our goal is to establish a model to predict the occurrence of

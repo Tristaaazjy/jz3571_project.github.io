@@ -906,12 +906,12 @@ need to transform or remedy our data. The skewness can be neglected.</p>
 needed to be tested. We used the corrplot function to test the
 collinearity. The plot result shows that there no significant
 correlation relationship between all eight variables, although the
-SkinThickness variable and Insulin variable has a light purple color
-which indicate they might correlated, the index is only about 0.6 which
-is not significantly correlated and also we do not include the
-SkinThickness variable in the final model which will be discussed later.
-Thus, we can conclude that all the eight variables can be used to fit a
-model and find the prediction rate of diabetes.</p>
+<code>SkinThickness</code> variable and <code>Insulin</code> variable
+has a light purple color which indicate they might correlated, the index
+is only about 0.6 which is not significantly correlated and also we do
+not include the SkinThickness variable in the final model which will be
+discussed later. Thus, we can conclude that all the eight variables can
+be used to fit a model and find the prediction rate of diabetes.</p>
 <pre class="r"><code>col &lt;- colorRampPalette(c(&quot;violetred&quot;, &quot;white&quot;, &quot;mediumpurple2&quot;))(20)
 corrplot(res, type = &quot;upper&quot;, order = &quot;hclust&quot;, 
          tl.col = &quot;lavenderblush4&quot;, tl.srt = 40,bg = &quot;lavenderblush2&quot;,col =col,tl.cex = 0.6)</code></pre>
@@ -949,7 +949,7 @@ df &lt;- data.frame(
 ggplot(df, aes(x=Agegroup, y=Percentage)) + 
   geom_bar(stat = &quot;identity&quot;,color=&quot;rosybrown&quot;, fill=&quot;rosybrown&quot; )+
   geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 4,
-            position = position_dodge(0.9),color =&quot;rosybrown3&quot;) + ggtitle(&quot;Fig4. Percentage of Diabetes in Different Age Groups&quot;)+
+            position = position_dodge(0.9),color =&quot;rosybrown3&quot;) + ggtitle(&quot;Fig3. Percentage of Diabetes in Different Age Groups&quot;)+
   theme_minimal()+labs(x=&quot;Age Group&quot;)+
   theme(plot.title = element_text(color = &quot;darkgrey&quot;,size = 12))</code></pre>
 <p><img src="Data-exploration_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -969,7 +969,7 @@ df &lt;- data.frame(
 ggplot(df, aes(x=Pregnancies, y=Percentage)) + 
   geom_bar(stat = &quot;identity&quot;,color=&quot;rosybrown&quot;, fill=&quot;rosybrown3&quot;)+
   geom_text(aes(label = round(Percentage,1)), vjust = -0.2, size = 3,
-            position = position_dodge(0.9),colour = &quot;rosybrown4&quot;) + ggtitle(&quot;Fig3. Percentage of Diabetes According to Different Pregnancies&quot;)+
+            position = position_dodge(0.9),colour = &quot;rosybrown4&quot;) + ggtitle(&quot;Fig4. Percentage of Diabetes According to Different Pregnancies&quot;)+
   theme_minimal()+
   theme(plot.title = element_text(color = &quot;darkgrey&quot;,size = 12))</code></pre>
 <p><img src="Data-exploration_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>

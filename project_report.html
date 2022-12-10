@@ -434,6 +434,8 @@ least 21 years old of Pima Indian heritage.</p>
 </div>
 <div id="exploratory-analysis" class="section level2">
 <h2>Exploratory analysis</h2>
+<div id="variable-distribution" class="section level3">
+<h3>Variable Distribution</h3>
 <p>We start with visualizing the distributions of variables among each
 group, whether the eight diagnostic measurements are related to diabetes
 or not. Since our outcome variable is a binary variable, the box plot
@@ -445,6 +447,9 @@ plots are shown in figure 1.</p>
 <p>Results reveal that different groups of females have different
 medians of diagnostic results, which indicate that the factors have
 linear or nonlinear association with diabetes.</p>
+</div>
+<div id="collinearity" class="section level3">
+<h3>Collinearity</h3>
 <p>Before fitting the model, the collinearity between different factors
 needed to be tested. We used the corrplot function to test the
 collinearity. The plot result shows that there no significant
@@ -459,16 +464,22 @@ model and find the prediction rate of diabetes.</p>
 <p>Since the age and pregnancy factors are most concerned. We use the
 bar plot to visualize the proportion of diabetes among stratified number
 of pregnancies and age group.</p>
-<p>age~diabetes histogram plot The diabetes proportion gets higher with
+</div>
+<div id="age" class="section level3">
+<h3>Age</h3>
+<p>“Men generally have heart disease in their 40’s and 50’s, about a
+decade before women. But this is generally not true for diabetic women.
+For diabetic women, the cardiovascular risk occurs earlier. Diabetes
+takes away much of the protection premenopausal women would normally get
+from estrogen.” —Kapur, A., &amp; Seshiah, V. (2017)</p>
+<p>According to the figure 3, the diabetes proportion gets higher with
 the increase of age variable, and the age group of 50-60 years old has
 the highest diabetes proportion. Generally, age factors have a positive
-association with diabetes proportion. “Men generally have heart disease
-in their 40’s and 50’s, about a decade before women. But this is
-generally not true for diabetic women. For diabetic women, the
-cardiovascular risk occurs earlier. Diabetes takes away much of the
-protection premenopausal women would normally get from estrogen.”
-—Kapur, A., &amp; Seshiah, V. (2017)</p>
+association with diabetes proportion.</p>
 <p><img src="project_report_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="pregnancy" class="section level3">
+<h3>Pregnancy</h3>
 <p>We also examine the association between pregnancy and diabetes
 proportion, as it can be seen in the plot below, as the pregnancy
 frequency increases the diabetes proportion also increases, and when the
@@ -476,12 +487,11 @@ pregnancy frequency is 17 times, diabetes proportion reaches a hundred
 percent.</p>
 <p><img src="project_report_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+</div>
 <div id="statistical-analysis" class="section level2">
 <h2>Statistical analysis</h2>
 <div id="model-selection" class="section level3">
 <h3>Model Selection</h3>
-<div id="full-model" class="section level4">
-<h4>Full model</h4>
 <p>Since the outcome of diabetes was a binary variable in our dataset(1
 = disease, 0 = no disease), we used the Logistic model to obtain the
 primary model which includes every diagnostic measurement in the model
@@ -494,27 +504,20 @@ Since the full model includes every measurement and does not perform
 statistical analysis and comparisons with other models to see its
 predictive ability, therefore it needs to be further analyzed and
 improved to get prediction optimization.</p>
-<p>Full model test stat</p>
+<div id="full-model" class="section level4">
+<h4>Full model</h4>
 <p>The full model result shows <code>Pregnancies</code>,
 <code>Glucose</code>, <code>BloodPressure</code>, <code>BMI</code>, and
 <code>DiabetesPredigreeFunction</code> are significantly related to
 diabetes odds, while <code>SkinThickness</code>, <code>Insulin</code>
-and <code>Age</code> are not significantly related to diabetes odds.
-From the odds of each variable, we expect that the diabetes associated
-with pregnancies, glucose, blood pressure, BMI, Diabetes Pedigree
-Function and age, since the full model gives the estimates is rather
-larger for these five variables. The full model gives an AIC around 783.
-Due to the nonsignificant variables included in the model and high AIC,
-we need to adjust our model. and the obtained test statistics gives R
-square equals to 0.265, and Alc is around 740 which indicates a lower
-model fitting rate, but the test accuracy is around 0.79 suggests a good
-prediction rate. Due to the contradiction of lower R square value and
-higher accuracy, other model fitting is needed. Thus, the AIc selection
-model was used to achieve a higher R square value.</p>
+and <code>Age</code> are not significantly related to diabetes odds.</p>
+<p>The full model gives an AIC around 783. Due to the non-significant
+variables included in the model and high AIC, we need to adjust our
+model.</p>
 </div>
 <div id="stepwise-regression" class="section level4">
 <h4>Stepwise regression</h4>
-<p>The first model was fitted using stepwise regression that is a
+<p>The other model was fitted using stepwise regression that is a
 step-by-step iterative construction of a regression model involving the
 selection of independent variables. It adds or removes potential
 explanatory variables one by one and test s for statistical significance
@@ -527,13 +530,12 @@ a smaller AIC.</p>
 </div>
 <div id="best-subset-regression" class="section level4">
 <h4>Best subset regression</h4>
-<p>The second model was fitted using best subset regression that
-compares all possible models and returns the two best models for one
-predictor, two predictors, three predictors, and so on for the number of
-possible predictors that were entered into the best subsets regression.
-The best model it generated includes seven predictors:
-’<code>Pregnancies</code>, <code>Glucose</code>,
-<code>BloodPressure</code>, <code>BMI</code>, and
+<p>While stepwise regression select variables sequentially, the best
+subsets approach aims to find out the best fit model from all possible
+subset models. Best subset regression selects the best model from all
+possible subsets according to some goodness-of-fit criteria. The best
+model it generated includes seven predictors: ’<code>Pregnancies</code>,
+<code>Glucose</code>, <code>BloodPressure</code>, <code>BMI</code>, and
 <code>DiabetesPredigreeFunction</code>, and <code>Age</code>, and
 <code>Insulin</code>.</p>
 </div>
@@ -544,11 +546,19 @@ The best model it generated includes seven predictors:
 that splits the data into two sets: one set is used to train the model
 and the remaining set is used to test the model. We split so that 80% is
 used for training a regression model and 20% is used to evaluate the
-model performance. RMSE is the square root of the averaged squared
-difference between the actual value and the predicted value of the
-target variable. It gives the average prediction error made by the
-model, thus decreasing the RMSE value increases the accuracy of the
-mode.</p>
+model performance.</p>
+<p>The process works as follow:</p>
+<ul>
+<li>Build (train) the model on the training data set</li>
+<li>Apply the model to the test data set to predict the outcome of new
+unseen observations</li>
+<li>Quantify the prediction error as the mean squared difference between
+the observed and the predicted outcome values.</li>
+</ul>
+<p>The results are shown in following table.</p>
+<center>
+<image src='images/table_1.jpeg' style = "width:100%">
+</center>
 <ul>
 <li><p>Mean Absolute Error (MAE) gives the absolute difference between
 the actual values and the values predicted by the model for the target
@@ -583,14 +593,64 @@ less than 0.5, we classified it as 0. If the predicted value is larger
 than 0.5, we classified it as 1. Then we computed the ratio of predicted
 value from the test data to the observed value of testing data to see
 how much percentage of the predicted value matched to the observed value
-and recorded it as prediction accuracy. From the comparison table, we
-see that it returns similar values among RMSE of 0.42, MAE of 0.35,
-prediction accuracy of 0.74. Stepwise regression’s AIC and AUC is
-slightly lower than the full model’s and subset model’s respectively but
-the difference is not statistically significant. Therefore, we select
-the stepwise regression model with the fewest predictors following the
-principle of parsimony.</p></li>
+and recorded it as prediction accuracy.</p></li>
 </ul>
+<div id="conclusion" class="section level4">
+<h4>Conclusion</h4>
+<p>From the comparison table, we see that it returns similar values
+among RMSE of 0.42, MAE of 0.35, prediction accuracy of 0.74. Stepwise
+regression’s AIC and AUC is slightly lower than the full model’s and
+subset model’s respectively but the difference is not statistically
+significant. Therefore, we select the stepwise regression model with the
+fewest predictors following the principle of parsimony.</p>
+</div>
+</div>
+<div id="model-interpretation" class="section level3">
+<h3>Model Interpretation</h3>
+<center>
+<image src='images/table_2.jpeg' style = "width:100%">
+</center>
+<p>The final best model generated is as following: <span
+class="math inline">\((pi/1-pi) =
+1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)\)</span></p>
+<p>pi is the probability for diabetes</p>
+<ul>
+<li><p>On average, for one more pregnancy, the estimated increase in
+diabetes odds is 1.021, holding other variables constant.</p></li>
+<li><p>For one unit increase in glucose, the estimated increase in
+diabetes odds on average is 1.006, holding other variables
+constant.</p></li>
+<li><p>For one mmHg increase in blood pressure, the estimated increase
+in diabetes odds on average is 0.998, holding other variables
+constant.</p></li>
+<li><p>For one unit increase in BMI, the estimated increase in diabetes
+odds on average is 1.013, holding other variables constant.</p></li>
+<li><p>For one unit increase in diabetes pedigree function, the
+estimated increase in diabetes odds on average is 1.151, , holding other
+variables constant.</p></li>
+<li><p>For one year increase in age, the estimated increase in diabetes
+odds on average is around 1.003, holding other variables
+constant.</p></li>
+</ul>
+<p>The six predictor estimators were listed in the table, and four of
+them have a positive association with diabetes. However, we discovered
+that the blood pressure and Glucose variables have the estimated odds
+around one, which implies no relationship with diabetes. What we expect
+is that the Glucose and blood pressure variable will help us predict the
+disease of diabetes. One possible explanation is that units of Glucose
+and blood pressure variables are very small. A diminutive unit increase
+of these two variables results in only a slight change in the outcome of
+p/1-pi. Therefore, the coefficient will be close to 1 as the overall
+change is little. The small increase is caused by the absolute change in
+the values instead of the small influence of glucose and blood pressure
+on diabetes.</p>
+<p>Glucose and blood pressure will be at their normal range if people do
+not have disease, and the odds result of these two only represent the
+rate of outcome as unit change as we considered the unit of the glucose
+and blood pressure is small. Also, the measure method and difference in
+measurement time will affect the glucose and blood pressure result. That
+might be the reason why the odds of glucose and blood pressure are
+around one</p>
 </div>
 </div>
 <div id="discussion" class="section level2">
@@ -598,26 +658,17 @@ principle of parsimony.</p></li>
 <div id="key-findings" class="section level3">
 <h3>Key findings</h3>
 <p>In the process of detailed data analysis, we identified several
-variables that were most strongly associated with diabetes: Pregnancies,
-Glucose, Blood Pressure, BMI, Diabetes Pedigree Function and Age. The
-key variables were determined through odds ratio as the model building
-uses logistic methods. The logistic full model ,stepwise regression and
-best subset models were also obtained to make prediction of whether a
-patient will have diabetes or not.</p>
+variables that were most strongly associated with diabetes:
+<code>Pregnancies</code>, <code>Glucose</code>,
+<code>Blood Pressure</code>, <code>BMI</code>,
+<code>Diabetes Pedigree Function</code> and <code>Age</code>. The key
+variables were determined through odds ratio as the model building uses
+logistic methods. The logistic full model ,stepwise regression and best
+subset models were also obtained to make prediction of whether a patient
+will have diabetes or not.</p>
 </div>
-<div id="model-comparison-1" class="section level3">
-<h3>Model Comparison:</h3>
-<p>The stepwise model observed six variables which helps predict
-diabetes, where the best subset model gives seven variables. The
-statistical measurement results were shown through the table of model
-comparison. We split the data set so that 80% is used for training a
-regression model and 20% is used to evaluate the model performance. The
-obtained AIc result , AUC result and accuracy were rather same, and all
-other criteria are similar, thus, the simplest model–stepwise
-regression– was chosen as the final prediction model.</p>
-</div>
-<div id="was-the-finding-as-expected" class="section level3">
-<h3>Was the finding as expected?</h3>
+<div id="expectation" class="section level3">
+<h3>Expectation</h3>
 <p>In our hypothesis, we expected diabetes to be associated with
 pregnancies, glucose, blood pressure, BMI, Diabetes Pedigree Function
 and age.The stepwise model gives the model which contains 6 variables
@@ -625,16 +676,17 @@ compared with the five variables model of what we expected, and further
 increased the accuracy and prediction ability.</p>
 </div>
 <div id="insight" class="section level3">
-<h3>Insight:</h3>
+<h3>Insight</h3>
 <p>The dataset we analyzed proved that the DiabetesPedigreeFunction
 variable has the most important effect on diabetes, which means the
 family factor plays an important role in diabetes. Next index refers to
 Pregnancies, the more times women have pregnancy, the higher probability
 they will have diabetes. For the other variables, glucose and blood
 pressure, it will result in the probability of diabetes increasing as
-the variables increase.. From the above analysis, the best way to avoid
-diabetes is just to look up the family history, try to avoid unnecessary
-pregnancy and measure glucose, blood pressure regularly.</p>
+the value of the measurements increase. From the above analysis, the
+best way to avoid diabetes is just to look up the family history, try to
+avoid unnecessary pregnancy and measure glucose, blood pressure
+regularly.</p>
 </div>
 </div>
 

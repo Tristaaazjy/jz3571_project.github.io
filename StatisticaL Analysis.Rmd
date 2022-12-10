@@ -35,23 +35,22 @@ diabetes <- read.csv("diabetes.csv")
 
 ## Model Selection
 
-### Full Model
 
-Since the outcome of diabetes was a binary variable in our dataset(1 = disease, 0 = no disease),  we used the Logistic model to obtain the primary model which includes every diagnostic measurement in the model to explore the relationship between these measurements and diabetes. A logistic model models the probability of an event occurring by letting the log odds of the event be a linear combination of one or more independent variables. The analysis uses binary variable regression and models the probability of diabetes occurring with all the variables. Since the full model includes every measurement and does not perform statistical analysis and comparisons with other models to see its predictive ability, therefore it needs to be further analyzed and improved to get prediction optimization.
+Since the outcome of diabetes was a binary variable in our dataset(1 = disease, 0 = no disease), we used the Logistic model to obtain the primary model which includes every diagnostic measurement in the model to explore the relationship between these measurements and diabetes. A logistic model models the probability of an event occurring by letting the log odds of the event be a linear combination of one or more independent variables. The analysis uses binary variable regression and models the probability of diabetes occurring with all the variables. Since the full model includes every measurement and does not perform statistical analysis and comparisons with other models to see its predictive ability, therefore it needs to be further analyzed and improved to get prediction optimization.
+
+### Full model 
 
 ```{r}
 fullmodel <- glm(Outcome ~. ,data = diabetes)
 summary(fullmodel)
 ```
 
-#### Full model test statistics
-
-The full model result shows pregnancies, glucose, blood pressure, BMI and diabetes pedigree function are significantly related  to diabetes odds, while skin thickness, insulin and age are not significantly related to diabetes odds. It has an AIC around 783. Due to the nonsignificant variables included in the model and high AIC, we need to adjust our model.
+The full model result shows `Pregnancies`, `Glucose`,  `BloodPressure`, `BMI`, and `DiabetesPredigreeFunction` are significantly related  to diabetes odds, while `SkinThickness`, `Insulin` and `Age` are not significantly related to diabetes odds. It has an AIC around 783. Due to the non-significant variables included in the model and high AIC, we need to adjust our model.
 
 
 ### Stepwise regression
 
-The first model was fitted using stepwise regression that is a step-by-step iterative construction of a regression model involving the selection of independent variables. It adds or removes potential explanatory variables one by one and test s for statistical significance after each iteration. The stepwise regression generates six predictors of statistical significance including `Pregnancies`, `Glucose`,  `BloodPressure`, `BMI`, and `DiabetesPredigreeFunction`, and `Age`. The final model eliminating`SkinThickness` and `Insulin` has a smaller AIC. 
+The other model was fitted using stepwise regression that is a step-by-step iterative construction of a regression model involving the selection of independent variables. It adds or removes potential explanatory variables one by one and test s for statistical significance after each iteration. The stepwise regression generates six predictors of statistical significance including `Pregnancies`, `Glucose`,  `BloodPressure`, `BMI`, and `DiabetesPredigreeFunction`, and `Age`. The final model eliminating`SkinThickness` and `Insulin` has a smaller AIC. 
 
 
 ```{r}
@@ -88,7 +87,7 @@ The process works as follow:
 - Apply the model to the test data set to predict the outcome of new unseen observations
 - Quantify the prediction error as the mean squared difference between the observed and the predicted outcome values.
 
-ALL criterions are similar, so we choose the simplest model.(stepmodel)
+The results are shown in following table.
 
 
 ```{r, include=FALSE}
@@ -140,26 +139,28 @@ variable_data <- data.frame(criterion,full_val,step_val,sub_val)
 kable(variable_data,caption = "Table 1.Model Comparison", col.names = c("Criterion","Full Model","Stepwise model","Subset model"))%>% kable_styling(latex_option = c("hold_position"), position = "left")
 ```
 
-### Root Mean Squared Error (RMSE): 
+### Root Mean Squared Error (RMSE)
 
 As the name suggests it is the square root of the averaged squared difference between the actual value and the predicted value of the target variable. It gives the average prediction error made by the model, thus decreasing the RMSE value increases the accuracy of the mode. 
 
-### Mean Absolute Error (MAE): 
+### Mean Absolute Error (MAE)
 
 This metric gives the absolute difference between the actual values and the values predicted by the model for the target variable. If the value of the outliers does not have much to do with the accuracy of the model, then MAE can be used to evaluate the performance of the model. Its value must be less in order to make better models.
 
-### Akaike Information Criterion (AIC): 
+### Akaike Information Criterion (AIC)
 
 It assesses how well a model fits the data it generates.The calculation of the AIC relies on the number of independent variables used to build the model and the maximum likelihood estimate of the model. According to AIC, the best-fitting model is the one that explains the greatest amount of variation with the fewest independent variables, whichFewer variables will also enhance the optimization of the model to reduce error. Each redundant predictor added to the model will introduce a penalty. 
 
 
-### Area under the ROC Curve (AUC): 
+### Area under the ROC Curve (AUC)
 
 An ROC curve is a graph showing the performance of  a classification model at all classification thresholds. AUC measures the entire two-dimensional area underneath the entire ROC curve. The higher the AUC score, the better the classification of the predicted values is. For example, if we consider a model to predict and classify whether the outcome is ‘Diabetes'' or ‘Normal’, a high AUC indicates that the model is capable of classifying ‘Diabetes” as ’Diabetes” and ‘Normal’ as ‘Normal’ more efficiently. There are two reasons why we compare AUC.  On one hand, AUC is scale-invariant. It measures the ranking of predictions rather than their absolute values. On the other hand, AUC measures the quality of the model’s predictions irrespective of what classification threshold is chosen. Full model and subset model’s AUC is slightly higher than the stepwise model but not with significant statistical value.
 
-### Prediction accuracy:
+### Prediction accuracy
 
 Prediction accuracy was calculated by predicting the testing data using the model fitted from the training data. If the predicted value is less than 0.5, we classified it as 0. If the predicted value is larger than 0.5, we classified it as 1. Then we computed the ratio of predicted value from the test data  to the observed value of testing data to see how much percentage of the predicted value matched to the observed value and recorded it as prediction accuracy.
+
+### Conclusion
 
 From the comparison table, we see that it returns similar values among RMSE of 0.42, MAE of 0.35, prediction accuracy of 0.74. Stepwise regression’s AIC and AUC is slightly lower than the full model’s and subset model’s respectively but the difference is not statistically significant.  
 
@@ -208,10 +209,32 @@ kable(variable_data,caption = "Table 2.Parameter estimates for the logistic mode
 
 
 The final best model generated is as following:
-$$Outcome =
-1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)$$
+$(pi/1-pi) = 1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)$
+
+pi is the probability for diabetes  
+
+* On average, for one more pregnancy, the estimated increase in diabetes odds is 1.021, holding other variables constant.
+
+* For one unit increase in glucose, the estimated increase in diabetes odds on average is 1.006, holding other variables constant.
+
+* For one mmHg increase in blood pressure, the estimated increase in diabetes odds on average is 0.998, holding other variables constant.
+
+* For one unit increase in BMI, the estimated increase in diabetes odds on average is 1.013, holding other variables constant.
+
+* For one unit increase in diabetes pedigree function, the estimated increase in diabetes odds on average is 1.151, , holding other variables constant.
+
+* For one year increase in age, the estimated increase in diabetes odds on average is around 1.003, holding other variables constant.
+
+
+The six predictor estimators were listed in the table, and four of them have a positive association with diabetes. However, we discovered that the blood pressure and Glucose variables have the estimated odds around one, which implies no relationship with diabetes. What we expect is that the Glucose and blood pressure variable will help us predict the disease of diabetes. One possible explanation is that units of Glucose and blood pressure variables are very small. A diminutive unit increase of these two variables results in only a slight change in the outcome of p/1-pi. Therefore, the coefficient will be close to 1 as the overall change is little. The small increase is caused by the absolute change in the values instead of the small influence of glucose and blood pressure on diabetes.  
+
+Glucose and blood pressure will be at their normal range if people do not have disease, and the odds result of these two only represent the rate of outcome as unit change as we considered the unit of the glucose and blood pressure is small. Also, the measure method and difference in measurement time will affect the glucose and blood pressure result. That might be the reason why the odds of glucose and blood pressure are around one.   
+  
+
 
 ## Assumptions Check
+
+We performed assumptions checks on our model. 
 
 ### Assumption 1— Appropriate Outcome Type
 
