@@ -209,7 +209,7 @@ kable(variable_data,caption = "Table 2.Parameter estimates for the logistic mode
 
 
 The final best model generated is as following:
-$(pi/1-pi) = 1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)$
+$(pi/1-pi) = 0.443 + 1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)$
 
 pi is the probability for diabetes  
 

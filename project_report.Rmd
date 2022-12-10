@@ -224,7 +224,7 @@ From the comparison table, we see that it returns similar values among RMSE of 0
 </center>
 
 The final best model generated is as following:
-$(pi/1-pi) = 1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)$
+$(pi/1-pi) = 0.433 + 1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)$
 
 pi is the probability for diabetes  
 
