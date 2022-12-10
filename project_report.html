@@ -431,6 +431,12 @@ in the data. This dataset contains eight independent medical predictors
 which might be associated with diabetes occurrence and one dependent
 variable <code>outcome</code>. The data source is female patients at
 least 21 years old of Pima Indian heritage.</p>
+<p>For the step of data cleaning, we load the raw data, reduce the
+outline data for all eight measurements, and reorganize the variables
+name. There are no null values, so no action was done to fill the
+dataset.</p>
+<p>We convert <code>outcome</code> to factor data type for future
+analysis.</p>
 </div>
 <div id="exploratory-analysis" class="section level2">
 <h2>Exploratory analysis</h2>
@@ -687,6 +693,14 @@ the value of the measurements increase. From the above analysis, the
 best way to avoid diabetes is just to look up the family history, try to
 avoid unnecessary pregnancy and measure glucose, blood pressure
 regularly.</p>
+</div>
+<div id="limitations" class="section level3">
+<h3>Limitations</h3>
+<p>The R-squared value is 0.27, relatively low, which implies that not
+many variances in the outcome could be explained by the predictors in
+our model. This problem could result from potential influential
+outliers. Our model is based on data of only Indian females, its
+application generalization and transformity is limited.</p>
 </div>
 </div>
 

@@ -53,6 +53,11 @@ We are trying to find which factors would help us predict diabetes among all the
 
 We use one dataset drawn from Kaggel which is originally from the National Institute of Diabetes and Digestive and Kidney. Our dataset includes 768 observations for 9 varibles. The objective of this dataset is to predict diabetes diagnostically, based on the medical measurements in the data. This dataset contains eight independent medical predictors which might be associated with diabetes occurrence and one dependent variable `outcome`.  The data source is female patients at least 21 years old of Pima Indian heritage.
 
+For the step of data cleaning, we load the raw data, reduce the outline data for all eight measurements, and reorganize the variables name. There are no null values, so no action was done to fill the dataset.
+
+We convert `outcome` to factor data type for future analysis. 
+
+
 ## Exploratory analysis
 
 ### Variable Distribution
@@ -255,3 +260,8 @@ In our hypothesis, we expected diabetes to be associated with pregnancies, gluco
 ### Insight
 
 The dataset we analyzed proved that the DiabetesPedigreeFunction variable has the most important effect on diabetes, which means the family factor plays an important role in diabetes. Next index refers to Pregnancies,  the more times women have pregnancy, the higher probability they will have diabetes.  For the other variables, glucose and blood pressure, it will result in the probability of diabetes increasing as the value of the measurements increase. From the above analysis, the best way to avoid diabetes is just to look up the family history, try to avoid unnecessary pregnancy and measure glucose, blood pressure regularly.
+
+
+### Limitations
+
+The R-squared value is 0.27, relatively low, which implies that not many variances in the outcome could be explained by the predictors in our model. This problem could result from potential influential outliers. Our model is based on data of only Indian females, its application generalization and transformity is limited. 
