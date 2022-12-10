@@ -11,8 +11,8 @@ navbar:
       href: dashboard.html
     - text: "Project Report"
       href: project_report.html
-    - icon: fa-envelope fa-lg
-      href: mailto:<you@youremail.com>
+    - text: "Screencast"
+      href: screencast.html
     - icon: fa-github fa-lg
       href: https://github.com/Tristaaazjy/jz3571_project.github.io
 output:
