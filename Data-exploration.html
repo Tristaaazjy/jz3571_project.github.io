@@ -343,7 +343,7 @@ div.tocify {
   <a href="StatisticaL-Analysis.html">Descriptive statistics</a>
 </li>
 <li>
-  <a href="dashboard.html">Mapping</a>
+  <a href="dashboard.html">Diabetes Predictor</a>
 </li>
 <li>
   <a href="project_report.html">Project Report</a>
@@ -397,7 +397,7 @@ the raw data, reduce the outline data for all eight measurements, and
 reorganize the variables name. There are no null values, so no action
 was done to fill the dataset. We convert <code>outcome</code> to factor
 data type for future analysis.</p>
-<pre class="r"><code>kable(head(select(diabetes,Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome),9),caption = &quot;Table 1: Raw Data&quot;) %&gt;%
+<pre class="r"><code>kable(head(dplyr::select(diabetes,Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome),9),caption = &quot;Table 1: Raw Data&quot;) %&gt;%
   kable_styling(latex_option = c(&quot;hold_position&quot;), position = &quot;left&quot;)</code></pre>
 <table class="table" style>
 <caption>

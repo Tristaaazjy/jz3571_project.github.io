@@ -34,7 +34,7 @@ We convert `outcome` to factor data type for future analysis.
 
 
 ```{r}
-kable(head(select(diabetes,Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome),9),caption = "Table 1: Raw Data") %>%
+kable(head(dplyr::select(diabetes,Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome),9),caption = "Table 1: Raw Data") %>%
   kable_styling(latex_option = c("hold_position"), position = "left")
 
 diabetes$Outcome <-factor(diabetes$Outcome)
@@ -88,7 +88,7 @@ p8 <- ggplot(diabetes,aes(x= Outcome, y=Age,color=Outcome)) + geom_boxplot()+lab
 ```{r, echo = FALSE, fig.align='center'}
 p <- ggpubr::ggarrange(p1, p2,p3,p4,p5,p6,p7,p8, ncol=4,nrow = 2,common.legend = TRUE)
 
-ggpubr::annotate_figure(p, top = ggpubr::text_grob("Figure 1: Distributions of Variables Among Each Group", color = "#0F2540",face = "bold", size = 15))
+ggpubr::annotate_figure(p, top = ggpubr::text_grob("Figure 1: Distributions of Variables Among Each Group", color = "darkgrey",face = "bold", size = 13))
 
 ```
 
@@ -150,7 +150,7 @@ ggpubr::annotate_figure(h, top = ggpubr::text_grob("Figure 2: Distributions of V
 
 ```{r, echo = FALSE}
 diabetes$Outcome <-as.numeric(diabetes$Outcome)
-res <- cor(diabetes%>%select(Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome))
+res <- cor(diabetes%>%dplyr::select(Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin, BMI,DiabetesPedigreeFunction,Age, Outcome))
 ```
 
 The dash line indicates the normal range for individual females without diabetes. 

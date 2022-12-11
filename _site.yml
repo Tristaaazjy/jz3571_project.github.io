@@ -7,7 +7,7 @@ navbar:
       href: Data-exploration.html
     - text: "Descriptive statistics"
       href: StatisticaL-Analysis.html
-    - text: "Mapping"
+    - text: "Diabetes Predictor"
       href: dashboard.html
     - text: "Project Report"
       href: project_report.html

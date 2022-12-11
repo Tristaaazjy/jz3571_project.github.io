@@ -1,10 +1,9 @@
 ---
-title: "Diabetes Predictor Dashboard"
+title: "Shiny Dashboard"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
-    
 runtime: shiny
 ---
 
@@ -17,12 +16,9 @@ library(MASS)
 library
 ```
 
-```{r, echo=FALSE}
-diabetes = read_csv("./diabetes.csv")
-```
 
 
-```{r, echo=FALSE}
+```{r}
 ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(numericInput(inputId = "preg",
@@ -63,8 +59,8 @@ ui <- fluidPage(
 server <- function(input, output) {
 
   output$results <- renderText({
-    odds <- 1.021 * (input$preg) + 1.006 * (input$glu) + 0.998 * (input$BP) +  1.013 * (input$BMI) + 1.151 * (input$DPF) + 1.003 * (input$Age)   
-    results <-  odds/(1+exp(odds))
+    odds <- 0.433 + 0.021 * (input$preg) + 0.006 * (input$glu) - 0.002 * (input$BP) +  0.013 * (input$BMI) + 0.151 * (input$DPF) + 0.003 * (input$Age)   
+    results <-  odds/(1+odds)
 ##(pi/1−pi)=1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.013(BMI)+1.151(DiabetesPedigreeFunction)+1.003(Age)
     results
   })
@@ -72,3 +68,4 @@ server <- function(input, output) {
 
 shinyApp(ui = ui, server = server) 
 ```
+
