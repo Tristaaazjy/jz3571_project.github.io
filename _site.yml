@@ -8,7 +8,7 @@ navbar:
     - text: "Descriptive statistics"
       href: StatisticaL-Analysis.html
     - text: "Diabetes Predictor"
-      href: shiny_edited_copy.html
+      href: https://zchunyu.shinyapps.io/predictor/
     - text: "Project Report"
       href: project_report.html
     - icon: fa-video fa-lg
