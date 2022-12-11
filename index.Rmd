@@ -38,7 +38,7 @@ In the Statistical Analysis tab, you will find:
  * Logistic Model Selection Predicting Diabetes Occurrence through AIC 
  * Diagnostics of Logistic Model
 
-The interactive map tab will take you to a dashboard where you can explore how medical predictors affect the outcome of diabetes. 
+The interactive diabetes predictor tab will take you to a dashboard where you can explore how medical predictors affect the outcome probability of diabetes. 
 
 ### Collaborators
 
