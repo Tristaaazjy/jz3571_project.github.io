@@ -213,17 +213,17 @@ $(pi/1-pi) = 0.443 + 1.021(Pregnancies)+1.006(Glucose)+0.998(BloodPressure)+1.01
 
 pi is the probability for diabetes  
 
-* On average, for one more pregnancy, the estimated increase in diabetes odds is 1.021, holding other variables constant.
+* On average, for one more pregnancy, the estimated diabetes odds increases by 2.1%, holding other variables constant.
 
-* For one unit increase in glucose, the estimated increase in diabetes odds on average is 1.006, holding other variables constant.
+* For one unit increase in glucose, the estimated diabetes odds on average increases by 0.6%, holding other variables constant.
 
-* For one mmHg increase in blood pressure, the estimated increase in diabetes odds on average is 0.998, holding other variables constant.
+* For one mmHg increase in blood pressure, the estimated diabetes odds on average decreases by 0.2%, holding other variables constant.
 
-* For one unit increase in BMI, the estimated increase in diabetes odds on average is 1.013, holding other variables constant.
+* For one unit increase in BMI, the average estimated diabetes odds increases by 1.3%, holding other variables constant.
 
-* For one unit increase in diabetes pedigree function, the estimated increase in diabetes odds on average is 1.151, , holding other variables constant.
+* For one unit increase in diabetes pedigree function, the average estimated  diabetes odds increases by 15.1% , holding other variables constant.
 
-* For one year increase in age, the estimated increase in diabetes odds on average is around 1.003, holding other variables constant.
+* For one year increase in age, the average estimated  diabetes odds increases by 0.3%, holding other variables constant.
 
 
 The six predictor estimators were listed in the table, and four of them have a positive association with diabetes. However, we discovered that the blood pressure and Glucose variables have the estimated odds around one, which implies no relationship with diabetes. What we expect is that the Glucose and blood pressure variable will help us predict the disease of diabetes. One possible explanation is that units of Glucose and blood pressure variables are very small. A diminutive unit increase of these two variables results in only a slight change in the outcome of p/1-pi. Therefore, the coefficient will be close to 1 as the overall change is little. The small increase is caused by the absolute change in the values instead of the small influence of glucose and blood pressure on diabetes.  
