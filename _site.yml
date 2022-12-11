@@ -11,8 +11,8 @@ navbar:
       href: dashboard.html
     - text: "Project Report"
       href: project_report.html
-    - text: "Screencast"
-      href: screencast.html
+    - icon: fa-video fa-lg
+      href: https://youtu.be/iG7VMp0-PUs
     - icon: fa-github fa-lg
       href: https://github.com/Tristaaazjy/jz3571_project.github.io
 output:

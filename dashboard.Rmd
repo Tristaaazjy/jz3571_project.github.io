@@ -17,7 +17,7 @@ library(MASS)
 library
 ```
 
-```{r, echo=FALSE}
+```{r, include=FALSE}
 diabetes = read_csv("./diabetes.csv")
 ```
 
